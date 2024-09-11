@@ -6,6 +6,7 @@ use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Str;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -16,7 +17,7 @@ class AdminProductController extends Controller
      */
     public function index()
     {
-        $products = Product::all();
+        $products = Product::with('category', 'brand', 'product_images')->get();
         $brands = Brand::all();
         $categories = Category::all();
         return inertia('Admin/Products/Index', [
@@ -40,27 +41,28 @@ class AdminProductController extends Controller
     public function store(Request $request)
     {
         //dd($request->all());
-        $produts = new Product();
-        $produts->title = $request->title;
-        $produts->slug = $request->slug;
-        $produts->description = $request->description;
-        $produts->price = $request->price;
-        $produts->quantity = $request->quantity;
-        $produts->brand_id = $request->brand_id;
-        $produts->category_id = $request->category_id;
-        $produts->save();
+        //dd($request->file('product_images'));
+        $product = new Product();
+        $product->title = $request->title;
+        $product->slug = $request->slug;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
+        $product->brand_id = $request->brand_id;
+        $product->category_id = $request->category_id;
+        $product->save();
 
         //check if the product has an image uploaded
         if ($request->hasFile('product_images')) {
             $productImages = $request->file('product_images');
             foreach ($productImages as $image) {
-                //create a new product image using timestampe and a random string
+                // Generate a unique name for the image using timestamp and random string
                 $uniqueName = time() . '-' . Str::random(10) . '.' . $image->getClientOriginalExtension();
-                //store the image in the public folder using a unique name
+                // Store the image in the public folder with the unique name
                 $image->move('product_images', $uniqueName);
-                //create a new product image record with the unique name and product id
-                $produts->images()->create([
-                    'product_id' => $produts->id,
+                // Create a new product image record with the product_id and unique name
+                ProductImage::create([
+                    'product_id' => $product->id,
                     'image' => 'product_images/' . $uniqueName,
                 ]);
             }
@@ -88,16 +90,55 @@ class AdminProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        //dd($request->all());
+        $product = Product::find($id);
+        $product->title = $request->title;
+        $product->slug = $request->slug;
+        $product->description = $request->description;
+        $product->price = $request->price;
+        $product->quantity = $request->quantity;
+        $product->brand_id = $request->brand_id;
+        $product->category_id = $request->category_id;
+
+        //check if the product has an image uploaded
+        if ($request->hasFile('product_images')) {
+            $productImages = $request->file('product_images');
+            // Loop through each uploaded image
+            foreach ($productImages as $image) {
+                // Generate a unique name for the image using timestamp and random string
+                $uniqueName = time() . '-' . Str::random(10) . '.' . $image->getClientOriginalExtension();
+
+                // Store the image in the public folder with the unique name
+                $image->move('product_images', $uniqueName);
+
+                // Create a new product image record with the product_id and unique name
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image' => 'product_images/' . $uniqueName,
+                ]);
+            }
+        }
+
+        $product->update();
+
+        return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy( $id)
     {
-        //
+        $product = Product::find($id);
+        $product->delete();
+        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+    }
+
+    public function deleteimage($id)
+    {
+        $image = ProductImage::where('id', $id)->delete();
+        return redirect()->route('products.index')->with('success', 'Product image deleted successfully');
     }
 }
