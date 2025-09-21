@@ -9,8 +9,8 @@
             <slot></slot>
         </div>
     </div>
-
-  
+    <!--footer-->
+    <Footer />
 </template>
 
 <script setup>

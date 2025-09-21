@@ -77,7 +77,7 @@ const addProduct = async () => {
     //end add product images
 
     try {
-        await router.post("products", formData, {
+        await router.post(route('admin.products.store'), formData, {
             onSuccess: (page) => {
                 Swal.fire({
                     toast: true,
@@ -139,7 +139,7 @@ onMounted(() => {
 const deleteImage = async (pimage, index) => {
     console.log(pimage);
     try {
-        await router.delete("/products/image/" + pimage.id, {
+        await router.delete(route('admin.products.image.delete', pimage.id), {
             onSuccess: (page) => {
                 product_images.value.splice(index, 1);
                 Swal.fire({
@@ -176,7 +176,7 @@ const updateProduct = async () => {
     //end add product images
 
     try {
-        await router.post("/products/" + id.value, formData, {
+        await router.post(route('admin.products.update', id.value), formData, {
             onSuccess: (page) => {
                 dialogVisible.value = false;
                 resetForm();
@@ -208,7 +208,7 @@ const deleteProduct = async (product) => {
     }).then((result) => {
         if (result.isConfirmed) {
             try {
-                router.delete("/products/" + product.id, {
+                router.delete(route('admin.products.destroy', product.id), {
                     onSuccess: (page) => {
                         Swal.fire({
                             toast: true,

@@ -63,6 +63,27 @@ class AdminController extends Controller
             ->take(5)
             ->get();
             
+        // Best sellers data (for best sellers section)
+        $bestSellingProducts = OrderItem::with('product.brand', 'product.category')
+            ->select('product_id', \DB::raw('SUM(quantity) as total_sold'), \DB::raw('SUM(unit_price * quantity) as total_revenue'))
+            ->groupBy('product_id')
+            ->having('total_sold', '>', 0)
+            ->orderBy('total_sold', 'desc')
+            ->take(8)
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'id' => $item->product->id,
+                    'title' => $item->product->title,
+                    'price' => $item->product->price,
+                    'quantity' => $item->product->quantity,
+                    'brand' => $item->product->brand,
+                    'category' => $item->product->category,
+                    'total_sold' => $item->total_sold,
+                    'total_revenue' => $item->total_revenue,
+                ];
+            });
+            
         // New users this month
         $newUsersThisMonth = User::where('is_admin', false)
             ->where('created_at', '>=', Carbon::now()->startOfMonth())
@@ -92,6 +113,7 @@ class AdminController extends Controller
             'monthlyRevenue' => $monthlyRevenue,
             'orderStatusCounts' => $orderStatusCounts,
             'topSellingProducts' => $topSellingProducts,
+            'bestSellingProducts' => $bestSellingProducts,
         ]);
     }
 }

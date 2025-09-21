@@ -73,7 +73,7 @@ class AdminProductController extends Controller
             }
         }
 
-        return redirect()->route('products.index')->with('success', 'Product created successfully');
+        return redirect()->route('admin.products.index')->with('success', 'Product created successfully');
     }
 
     /**
@@ -138,7 +138,7 @@ class AdminProductController extends Controller
 
         $product->update();
 
-        return redirect()->route('products.index')->with('success', 'Product updated successfully');
+        return redirect()->route('admin.products.index')->with('success', 'Product updated successfully');
     }
 
     /**
@@ -148,12 +148,12 @@ class AdminProductController extends Controller
     {
         $product = Product::find($id);
         $product->delete();
-        return redirect()->route('products.index')->with('success', 'Product deleted successfully');
+        return redirect()->route('admin.products.index')->with('success', 'Product deleted successfully');
     }
 
     public function deleteimage($id)
     {
         $image = ProductImage::where('id', $id)->delete();
-        return redirect()->route('products.index')->with('success', 'Product image deleted successfully');
+        return redirect()->route('admin.products.index')->with('success', 'Product image deleted successfully');
     }
 }

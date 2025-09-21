@@ -1,12 +1,16 @@
 <script setup>
 import UserLayout from "./Layouts/UserLayout.vue";
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
 import { defineProps } from "vue";
 import {router} from "@inertiajs/vue3";
+import Swal from 'sweetalert2';
 
+const page = usePage();
 
 defineProps({
     products: Array,
+    categories: Array,
+    bestSellers: Array,
 });
 
 const addToCart = (product) => {
@@ -20,10 +24,20 @@ const addToCart = (product) => {
                     title: page.props.flash.success,
                     position: "top-end",
                     showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
                 });
             }
         },
     });
+};
+
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-LS', {
+        style: 'currency',
+        currency: 'LSL',
+        minimumFractionDigits: 0
+    }).format(price);
 };
 </script>
 
@@ -115,49 +129,225 @@ const addToCart = (product) => {
             </div>
         </div>
 
-        <!-- Featured Categories -->
-        <div class="bg-gray-50 py-16">
+        <!-- Collections Section -->
+        <div class="bg-white py-12">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
-                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Explore our curated collections designed for every room in your home
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-3">Curated Collections</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">
+                        Discover our handpicked furniture collections for every space
                     </p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="text-center group cursor-pointer">
-                        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-4 group-hover:shadow-xl transition-shadow">
-                            <div class="h-48 bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                                </svg>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Living Room Collection -->
+                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/product_images/livingroom.jpg" 
+                                 alt="Living Room Collection" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                <h3 class="text-xl font-bold mb-1">Living Room</h3>
+                                <p class="text-sm opacity-90 mb-3">Comfort & Style</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="mr-3">24 items</span>
+                                    <span class="text-amber-300">From M299</span>
+                                </div>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Living Room</h3>
-                        <p class="text-gray-600">Sofas, chairs, coffee tables & more</p>
                     </div>
-                    <div class="text-center group cursor-pointer">
-                        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-4 group-hover:shadow-xl transition-shadow">
-                            <div class="h-48 bg-gradient-to-br from-green-400 to-green-600 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
-                                </svg>
+                    
+                    <!-- Bedroom Collection -->
+                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/product_images/bedroom.jpg" 
+                                 alt="Bedroom Collection" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                <h3 class="text-xl font-bold mb-1">Bedroom</h3>
+                                <p class="text-sm opacity-90 mb-3">Rest & Relaxation</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="mr-3">18 items</span>
+                                    <span class="text-amber-300">From M199</span>
+                                </div>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Bedroom</h3>
-                        <p class="text-gray-600">Beds, dressers, nightstands & storage</p>
                     </div>
-                    <div class="text-center group cursor-pointer">
-                        <div class="bg-white rounded-lg shadow-lg overflow-hidden mb-4 group-hover:shadow-xl transition-shadow">
-                            <div class="h-48 bg-gradient-to-br from-purple-400 to-purple-600 flex items-center justify-center">
-                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                </svg>
+                    
+                    <!-- Home Office Collection -->
+                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
+                        <div class="relative h-64 overflow-hidden">
+                            <img src="/product_images/homeoffice.jpg" 
+                                 alt="Home Office Collection" 
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
+                                <h3 class="text-xl font-bold mb-1">Home Office</h3>
+                                <p class="text-sm opacity-90 mb-3">Productivity & Comfort</p>
+                                <div class="flex items-center text-sm">
+                                    <span class="mr-3">15 items</span>
+                                    <span class="text-amber-300">From M149</span>
+                                </div>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Home Office</h3>
-                        <p class="text-gray-600">Desks, chairs, bookshelves & accessories</p>
                     </div>
+                </div>
+                
+                <!-- Collection Stats -->
+                <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-amber-600 mb-1">57</div>
+                        <div class="text-sm text-gray-600">Total Items</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-amber-600 mb-1">12</div>
+                        <div class="text-sm text-gray-600">Brands</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-amber-600 mb-1">8</div>
+                        <div class="text-sm text-gray-600">Categories</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-amber-600 mb-1">4.8</div>
+                        <div class="text-sm text-gray-600">Rating</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Best Sellers Section -->
+        <div class="bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                        </svg>
+                        Best Sellers
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Most Popular Products</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Discover our top-selling items loved by customers worldwide
+                    </p>
+                </div>
+
+                <div v-if="bestSellers && bestSellers.length > 0" class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    <div
+                        v-for="product in bestSellers"
+                        :key="product.id"
+                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-red-200"
+                    >
+                        <!-- Product Image Container -->
+                        <div class="relative aspect-square overflow-hidden bg-gray-50">
+                            <img
+                                v-if="product.product_images.length > 0"
+                                :src="`/${product.product_images[0].image}`"
+                                :alt="product.title"
+                                class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <img
+                                v-else
+                                src="/product_images/No_Image_Available.jpg"
+                                :alt="product.title"
+                                class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            
+                            <!-- Best Seller Badge -->
+                            <div class="absolute top-3 left-3">
+                                <span class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    Best Seller
+                                </span>
+                            </div>
+                            
+                            <!-- Sales Count Badge -->
+                            <div class="absolute top-3 right-3">
+                                <span class="bg-amber-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                    {{ product.total_sold || 0 }} sold
+                                </span>
+                            </div>
+                            
+                            <!-- Stock Badges -->
+                            <div class="absolute top-12 left-3 flex flex-col gap-2">
+                                <span v-if="product.quantity < 10" class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                    Low Stock
+                                </span>
+                                <span v-if="product.quantity === 0" class="bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                    Out of Stock
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <!-- Product Info -->
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-red-600 transition-colors duration-200">
+                                        <Link :href="route('products.show', product.id)" class="hover:text-red-600">
+                                            {{ product.title }}
+                                        </Link>
+                                    </h3>
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        <span v-if="product.brand">{{ product.brand.name }}</span>
+                                        <span v-if="product.category"> • {{ product.category.name }}</span>
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <!-- Price and Stock Info -->
+                            <div class="flex items-center justify-between mt-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl font-bold text-gray-900">
+                                        {{ formatPrice(product.price) }}
+                                    </span>
+                                    <span v-if="product.quantity > 0" class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                        In Stock ({{ product.quantity }})
+                                    </span>
+                                    <span v-else class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">
+                                        Out of Stock
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-6 flex gap-3">
+                                <button
+                                    @click="addToCart(product)"
+                                    :disabled="product.quantity === 0"
+                                    class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                                <Link
+                                    :href="route('products.show', product.id)"
+                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 text-base"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    View
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div v-else class="text-center py-12">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Best Sellers Yet</h3>
+                    <p class="text-gray-500">Check back soon for our most popular products!</p>
                 </div>
             </div>
         </div>
@@ -173,95 +363,303 @@ const addToCart = (product) => {
                 </div>
 
                 <div
-                    class="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8"
+                    class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4"
                 >
                     <div
                         v-for="product in products"
                         :key="product.id"
-                        class="group relative"
+                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-200"
                     >
-                        <div
-                            class="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80"
-                        >
+                        <!-- Product Image Container -->
+                        <div class="relative aspect-square overflow-hidden bg-gray-50">
                             <img
                                 v-if="product.product_images.length > 0"
-                                :src="`/${product.product_images[0].image} `"
-                                :alt="`${product.title}`"
-                                class="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                                :src="`/${product.product_images[0].image}`"
+                                :alt="product.title"
+                                class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
                             <img
                                 v-else
-                                src="https://cdn.vectorstock.com/i/500p/82/99/no-image-available-like-missing-picture-vector-43938299.jpg"
+                                src="/product_images/No_Image_Available.jpg"
                                 :alt="product.title"
-                                class="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                                class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
                             />
-                            <!--add to cart icon-->
-                            <div
-                                class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out cursor-pointer"
-                            >
-                                <div class="bg-blue-700 p-2 rounded-full">
-                                    <a @click="addToCart(product)">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-6 h-6 text-white"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-                                            />
-                                        </svg>
-                                    </a>
-                                </div>
-                                <div class="bg-blue-700 p-2 rounded-full ml-2">
-                                    <a href="detail">
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke-width="1.5"
-                                            stroke="currentColor"
-                                            class="w-6 h-6 text-white"
-                                        >
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                                            />
-                                            <path
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                                            />
-                                        </svg>
-                                    </a>
-                                </div>
+                            
+                            <!-- Badges -->
+                            <div class="absolute top-3 left-3 flex flex-col gap-2">
+                                <span v-if="product.quantity < 10" class="bg-red-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                    Low Stock
+                                </span>
+                                <span v-if="product.quantity === 0" class="bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded-full">
+                                    Out of Stock
+                                </span>
                             </div>
                         </div>
-                        <div class="mt-4 flex justify-between">
-                            <div>
-                                <h3 class="text-sm text-gray-700">
-                                    <a href="#">
-                                        <span
-                                            aria-hidden="true"
-                                            class="inset-0"
-                                        ></span>
-                                        {{ product.title }}
-                                    </a>
-                                </h3>
-                                <p class="mt-1 text-sm text-gray-500">Black</p>
+                        
+                        <!-- Product Info -->
+                        <div class="p-6">
+                            <div class="flex items-start justify-between mb-2">
+                                <div class="flex-1">
+                                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-amber-600 transition-colors duration-200">
+                                        <Link :href="route('products.show', product.id)" class="hover:text-amber-600">
+                                            {{ product.title }}
+                                        </Link>
+                                    </h3>
+                                    <p class="text-sm text-gray-500 mt-1">
+                                        <span v-if="product.brand">{{ product.brand.name }}</span>
+                                        <span v-if="product.category"> • {{ product.category.name }}</span>
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-sm font-medium text-gray-900">
-                                M{{ product.price }}
-                            </p>
+                            
+                            <!-- Price and Stock Info -->
+                            <div class="flex items-center justify-between mt-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="text-xl font-bold text-gray-900">
+                                        {{ formatPrice(product.price) }}
+                                    </span>
+                                    <span v-if="product.quantity > 0" class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                        In Stock ({{ product.quantity }})
+                                    </span>
+                                    <span v-else class="text-xs text-red-600 bg-red-100 px-2 py-1 rounded-full">
+                                        Out of Stock
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
+                            <div class="mt-6 flex gap-3">
+                                <button
+                                    @click="addToCart(product)"
+                                    :disabled="product.quantity === 0"
+                                    class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                    </svg>
+                                    Add to Cart
+                                </button>
+                                <Link
+                                    :href="route('products.show', product.id)"
+                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 text-base"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    View
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Categories Section -->
+        <div class="bg-gray-50 py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Browse our wide range of products organized by category
+                    </p>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div
+                        v-for="category in categories"
+                        :key="category.id"
+                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-200 cursor-pointer"
+                    >
+                        <Link :href="route('categories.show', category.slug)" class="block">
+                            <!-- Category Image/Icon Container -->
+                            <div class="aspect-square bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center p-8">
+                                <div class="text-center">
+                                    <div class="w-16 h-16 mx-auto mb-4 bg-amber-600 rounded-full flex items-center justify-center">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-white">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-amber-600 transition-colors duration-200">
+                                        {{ category.name }}
+                                    </h3>
+                                </div>
+                            </div>
+                            
+                            <!-- Category Info -->
+                            <div class="p-4 text-center">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                    Shop Now
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </span>
+                            </div>
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Testimonials Section -->
+        <div class="bg-white py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        Customer Reviews
+                    </div>
+                    <h2 class="text-3xl font-bold text-gray-900 mb-4">What Our Customers Say</h2>
+                    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Don't just take our word for it - hear from our satisfied customers
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Testimonial 1 -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 relative">
+                        <div class="absolute top-4 right-4 text-blue-200">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                            </svg>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            "Absolutely love my new dining table! The quality is outstanding and it fits perfectly in my space. The delivery team was professional and setup was quick. Highly recommend!"
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
+                                SJ
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Sarah Johnson</h4>
+                                <p class="text-sm text-gray-500">Verified Buyer</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- More products... -->
+                    <!-- Testimonial 2 -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 relative">
+                        <div class="absolute top-4 right-4 text-blue-200">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                            </svg>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            "The bedroom set I purchased exceeded my expectations. Beautiful craftsmanship, fast shipping, and excellent customer service. Will definitely be shopping here again!"
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
+                                MC
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Michael Chen</h4>
+                                <p class="text-sm text-gray-500">Verified Buyer</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 p-6 border border-gray-100 relative">
+                        <div class="absolute top-4 right-4 text-blue-200">
+                            <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                            </svg>
+                        </div>
+                        <div class="flex items-center mb-4">
+                            <div class="flex text-yellow-400">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 mb-6 leading-relaxed">
+                            "Great experience from start to finish. The website is easy to navigate, prices are competitive, and the furniture quality is exceptional. My living room looks amazing!"
+                        </p>
+                        <div class="flex items-center">
+                            <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold text-lg mr-4">
+                                EP
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-900">Emily Parker</h4>
+                                <p class="text-sm text-gray-500">Verified Buyer</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Trust Stats -->
+                <div class="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        <div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">5000+</div>
+                            <div class="text-gray-600">Happy Customers</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">4.9/5</div>
+                            <div class="text-gray-600">Average Rating</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">10+</div>
+                            <div class="text-gray-600">Years Experience</div>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">98%</div>
+                            <div class="text-gray-600">Satisfaction Rate</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
