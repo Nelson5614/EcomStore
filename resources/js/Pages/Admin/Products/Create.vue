@@ -1,33 +1,33 @@
 <template>
   <AdminLayout>
-    <div class="p-6">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-gray-900">Create New Product</h1>
-          <p class="text-gray-600">Add a new product to your store</p>
+    <div class="p-4 sm:p-6">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
+        <div class="mb-4 sm:mb-0">
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Product</h1>
+          <p class="text-sm sm:text-base text-gray-600">Add a new product to your store</p>
         </div>
         <Link
           :href="route('products.index')"
-          class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          class="inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           Back to Products
         </Link>
       </div>
 
       <!-- Flash Messages -->
-      <div v-if="$page.props.flash.success" class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-        <span class="block sm:inline">{{ $page.props.flash.success }}</span>
+      <div v-if="$page.props.flash.success" class="mb-3 sm:mb-4 bg-green-100 border border-green-400 text-green-700 px-3 sm:px-4 py-2 sm:py-3 rounded relative text-sm">
+        <span class="block">{{ $page.props.flash.success }}</span>
       </div>
-      <div v-if="$page.props.flash.error" class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-        <span class="block sm:inline">{{ $page.props.flash.error }}</span>
+      <div v-if="$page.props.flash.error" class="mb-3 sm:mb-4 bg-red-100 border border-red-400 text-red-700 px-3 sm:px-4 py-2 sm:py-3 rounded relative text-sm">
+        <span class="block">{{ $page.props.flash.error }}</span>
       </div>
 
       <!-- Form Card -->
       <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-        <form @submit.prevent="submit" class="p-6">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <form @submit.prevent="submit" class="p-4 sm:p-6">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
             <!-- Left Column -->
-            <div class="space-y-6">
+            <div class="space-y-4 sm:space-y-6">
               <!-- Product Name -->
               <div>
                 <label for="name" class="block text-sm font-medium text-gray-700">
@@ -101,7 +101,7 @@
               <!-- Price -->
               <div>
                 <label for="price" class="block text-sm font-medium text-gray-700">
-                  Price ($) <span class="text-red-500">*</span>
+                  Price (MWK) <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -109,10 +109,12 @@
                   v-model="form.price"
                   step="0.01"
                   min="0"
+                  @input="formatPrice"
                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   :class="{ 'border-red-500': form.errors.price }"
                   placeholder="0.00"
                 />
+                <p class="mt-1 text-xs text-gray-500">Enter numeric value only (e.g., 999.00)</p>
                 <p v-if="form.errors.price" class="mt-1 text-sm text-red-600">{{ form.errors.price }}</p>
               </div>
 
@@ -135,7 +137,7 @@
             </div>
 
             <!-- Right Column -->
-            <div class="space-y-6">
+            <div class="space-y-4 sm:space-y-6">
               <!-- Description -->
               <div>
                 <label for="description" class="block text-sm font-medium text-gray-700">
@@ -191,32 +193,32 @@
                 <label class="block text-sm font-medium text-gray-700">
                   Product Images
                 </label>
-                <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                <div class="mt-1 flex justify-center px-4 sm:px-6 pt-4 sm:pt-5 pb-4 sm:pb-6 border-2 border-gray-300 border-dashed rounded-md">
                   <div class="space-y-1 text-center">
-                    <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                    <svg class="mx-auto h-10 w-10 sm:h-12 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
                       <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
-                    <div class="flex text-sm text-gray-600">
+                    <div class="flex flex-col sm:flex-row text-sm text-gray-600 items-center justify-center">
                       <label for="images" class="relative cursor-pointer bg-white rounded-md font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-blue-500">
                         <span>Upload files</span>
                         <input id="images" name="images" type="file" multiple accept="image/*" @change="handleImageUpload" class="sr-only" />
                       </label>
-                      <p class="pl-1">or drag and drop</p>
+                      <p class="pl-0 sm:pl-1 mt-1 sm:mt-0">or drag and drop</p>
                     </div>
                     <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB each</p>
                   </div>
                 </div>
                 
                 <!-- Image Preview -->
-                <div v-if="imagePreviews.length > 0" class="mt-4 grid grid-cols-3 gap-4">
+                <div v-if="imagePreviews.length > 0" class="mt-3 sm:mt-4 grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
                   <div v-for="(preview, index) in imagePreviews" :key="index" class="relative">
-                    <img :src="preview" class="h-24 w-24 object-cover rounded-lg" />
+                    <img :src="preview" class="h-20 w-20 sm:h-24 sm:w-24 object-cover rounded-lg" />
                     <button
                       type="button"
                       @click="removeImage(index)"
                       class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
                     >
-                      <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg class="h-3 w-3 sm:h-4 sm:w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                       </svg>
                     </button>
@@ -227,17 +229,17 @@
           </div>
 
           <!-- Form Actions -->
-          <div class="mt-6 flex justify-end space-x-3">
+          <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end sm:space-x-3 space-y-3 sm:space-y-0">
             <Link
               :href="route('products.index')"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+              class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto"
             >
               Cancel
             </Link>
             <button
               type="submit"
               :disabled="form.processing"
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
+              class="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 w-full sm:w-auto"
             >
               <svg v-if="form.processing" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -300,11 +302,14 @@ const removeImage = (index) => {
 const submit = () => {
   const formData = new FormData();
   
+  // Clean the price by removing any currency symbols and non-numeric characters except decimal point
+  const cleanPrice = form.price ? form.price.toString().replace(/[^0-9.]/g, '') : '';
+  
   formData.append('name', form.name);
   formData.append('description', form.description);
   formData.append('brand_id', form.brand_id);
   formData.append('category_id', form.category_id);
-  formData.append('price', form.price);
+  formData.append('price', cleanPrice);
   formData.append('quantity', form.quantity);
   formData.append('status', form.status);
   formData.append('featured', form.featured);
@@ -321,6 +326,23 @@ const submit = () => {
       imagePreviews.value = [];
     },
   });
+};
+
+const formatPrice = (event) => {
+  // Remove any non-numeric characters except decimal point
+  const value = event.target.value;
+  const cleanValue = value.replace(/[^0-9.]/g, '');
+  
+  // Ensure only one decimal point
+  const parts = cleanValue.split('.');
+  if (parts.length > 2) {
+    event.target.value = parts[0] + '.' + parts.slice(1).join('');
+  } else {
+    event.target.value = cleanValue;
+  }
+  
+  // Update the form model
+  form.price = event.target.value;
 };
 
 const generateSlug = (name) => {

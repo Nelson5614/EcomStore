@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted } from "vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { initFlowbite } from "flowbite";
 import { defineProps } from "vue";
 import { router } from "@inertiajs/vue3";
@@ -39,6 +39,11 @@ const handlePictureCardPreview = (file) => {
 const handleRemove = (file) => {
     console.log(file);
 };
+
+// Responsive computed property
+const isMobile = computed(() => {
+    return window.innerWidth < 768;
+});
 
 //product form data
 const id = ref("");
@@ -231,7 +236,7 @@ const deleteProduct = async (product) => {
         <el-dialog
             v-model="dialogVisible"
             :title="editMode ? 'Edit product' : 'Add product'"
-            width="50%"
+            :width="isMobile ? '95%' : '50%'"
             :before-close="handleClose"
         >
             <!-- form -->
@@ -239,7 +244,7 @@ const deleteProduct = async (product) => {
                 @submit.prevent="
                     editMode ? updateProduct(product) : addProduct()
                 "
-                class="max-w-md mx-auto"
+                class="max-w-md mx-auto px-2 sm:px-0"
             >
                 <div class="relative z-0 w-full mb-5 group">
                     <input
@@ -430,9 +435,9 @@ const deleteProduct = async (product) => {
                 class="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden"
             >
                 <div
-                    class="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4"
+                    class="flex flex-col sm:flex-row items-center justify-between space-y-3 sm:space-y-0 sm:space-x-4 p-3 sm:p-4"
                 >
-                    <div class="w-full md:w-1/2">
+                    <div class="w-full sm:w-1/2">
                         <form class="flex items-center">
                             <label for="simple-search" class="sr-only"
                                 >Search</label
@@ -466,7 +471,7 @@ const deleteProduct = async (product) => {
                         </form>
                     </div>
                     <div
-                        class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0"
+                        class="w-full sm:w-auto flex flex-col sm:flex-row space-y-2 sm:space-y-0 items-stretch sm:items-center justify-end sm:space-x-3 flex-shrink-0"
                     >
                         <button
                             type="button"
@@ -653,7 +658,89 @@ const deleteProduct = async (product) => {
                         </div>
                     </div>
                 </div>
-                <div class="overflow-x-auto">
+                
+                <!-- Mobile Card View -->
+                <div class="sm:hidden">
+                    <div v-for="product in products" :key="product.id" class="border-b border-gray-200 p-3 sm:p-4 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-base font-medium text-gray-900 dark:text-white truncate">{{ product.title }}</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400">ID: {{ product.id }}</p>
+                            </div>
+                            <div class="flex space-x-2 ml-2">
+                                <button
+                                    @click="editProductModal(product)"
+                                    class="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300 text-sm"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    @click="deleteProduct(product)"
+                                    class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300 text-sm"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Category:</span>
+                                <span class="text-xs text-gray-900 dark:text-white">{{ product.category.name }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Brand:</span>
+                                <span class="text-xs text-gray-900 dark:text-white">{{ product.brand.name }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Quantity:</span>
+                                <span class="text-xs text-gray-900 dark:text-white">{{ product.quantity }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Price:</span>
+                                <span class="text-xs text-gray-900 dark:text-white">M{{ product.price }}</span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Stock:</span>
+                                <span
+                                    v-if="product.instock > 0"
+                                    class="bg-green-100 text-green-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-green-900 dark:text-green-300"
+                                >
+                                    In stock
+                                </span>
+                                <span
+                                    v-else
+                                    class="bg-red-100 text-red-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-red-900 dark:text-red-300"
+                                >
+                                    Out of stock
+                                </span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-xs font-medium text-gray-500 dark:text-gray-400">Status:</span>
+                                <button
+                                    v-if="product.is_published == 0"
+                                    type="button"
+                                    class="text-xs text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded px-3 py-1"
+                                >
+                                    Published
+                                </button>
+                                <button
+                                    v-else
+                                    type="button"
+                                    class="text-xs text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-2 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded px-3 py-1"
+                                >
+                                    Unpublished
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="products.length === 0" class="p-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                        No products found.
+                    </div>
+                </div>
+                
+                <!-- Desktop Table View -->
+                <div class="hidden sm:block overflow-x-auto">
                     <table
                         class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
                     >
@@ -679,7 +766,7 @@ const deleteProduct = async (product) => {
                             <tr
                                 v-for="product in products"
                                 :key="product.id"
-                                class="border-b dark:border-gray-700"
+                                class="border-b dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                             >
                                 <th
                                     scope="row"
@@ -786,11 +873,16 @@ const deleteProduct = async (product) => {
                                     </div>
                                 </td>
                             </tr>
+                            <tr v-if="products.length === 0">
+                                <td colspan="8" class="px-4 py-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                                    No products found.
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
                 <nav
-                    class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4"
+                    class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-3 sm:space-y-0 p-3 sm:p-4"
                     aria-label="Table navigation"
                 >
                     <span
