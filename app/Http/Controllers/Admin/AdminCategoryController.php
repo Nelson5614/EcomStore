@@ -2,64 +2,86 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class AdminCategoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        return inertia('Admin/Categories/Index');
+        $categories = Category::orderBy('id', 'asc')->get();
+        return inertia('Admin/Categories/Index', [
+            'categories' => $categories
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        return inertia('Admin/Categories/Create');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories',
+            'description' => 'nullable|string',
+        ]);
+
+        Category::create([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        return inertia('Admin/Categories/Show', [
+            'category' => $category
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        return inertia('Admin/Categories/Edit', [
+            'category' => $category
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name,' . $id,
+            'description' => 'nullable|string',
+        ]);
+
+        $category->update([
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'description' => $request->description,
+        ]);
+
+        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        $category = Category::findOrFail($id);
+        
+        if ($category->products()->exists()) {
+            return redirect()->route('categories.index')->with('error', 'Cannot delete category. It has associated products.');
+        }
+        
+        $category->delete();
+        
+        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
 }

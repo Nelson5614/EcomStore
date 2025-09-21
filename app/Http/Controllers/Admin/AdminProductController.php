@@ -32,7 +32,12 @@ class AdminProductController extends Controller
      */
     public function create()
     {
-        //
+        $brands = Brand::all();
+        $categories = Category::all();
+        return inertia('Admin/Products/Create', [
+            'brands' => $brands,
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -76,7 +81,10 @@ class AdminProductController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $product = Product::with('brand', 'category', 'product_images')->findOrFail($id);
+        return inertia('Admin/Products/Show', [
+            'product' => $product
+        ]);
     }
 
     /**
@@ -84,7 +92,14 @@ class AdminProductController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $product = Product::with('brand', 'category', 'product_images')->findOrFail($id);
+        $brands = Brand::all();
+        $categories = Category::all();
+        return inertia('Admin/Products/Edit', [
+            'product' => $product,
+            'brands' => $brands,
+            'categories' => $categories
+        ]);
     }
 
     /**
