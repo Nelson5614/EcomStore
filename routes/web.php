@@ -13,12 +13,14 @@ use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminBestSellerController;
+use App\Http\Controllers\Admin\AdminCollectionController;
 
 //user routes
 
 Route::get('/', [UserController::class, 'index'])->name('home');
 Route::get('/products/{id}', [UserController::class, 'show'])->name('products.show');
 Route::get('/categories/{slug}', [UserController::class, 'category'])->name('categories.show');
+Route::get('/collections/{slug}', [UserController::class, 'collection'])->name('collections.show');
 
 Route::middleware([
     'auth:sanctum',
@@ -59,4 +61,5 @@ Route::middleware(['auth','admin'])->group(function () {
     Route::resource('orders', AdminOrderController::class)->names('admin.orders');
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status.update');
     Route::resource('bestsellers', AdminBestSellerController::class)->names('admin.bestsellers');
+    Route::resource('collections', AdminCollectionController::class)->names('admin.collections');
 });

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Brand;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\Collection;
 use Illuminate\Support\Str;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
@@ -17,13 +18,15 @@ class AdminProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with('category', 'brand', 'product_images')->get();
+        $products = Product::with('category', 'brand', 'collection', 'product_images')->get();
         $brands = Brand::all();
         $categories = Category::all();
+        $collections = Collection::all();
         return inertia('Admin/Products/Index', [
             'products' => $products,
             'brands' => $brands,
             'categories' => $categories,
+            'collections' => $collections,
         ]);
     }
 
@@ -34,9 +37,11 @@ class AdminProductController extends Controller
     {
         $brands = Brand::all();
         $categories = Category::all();
+        $collections = Collection::all();
         return inertia('Admin/Products/Create', [
             'brands' => $brands,
-            'categories' => $categories
+            'categories' => $categories,
+            'collections' => $collections
         ]);
     }
 
@@ -55,6 +60,7 @@ class AdminProductController extends Controller
         $product->quantity = $request->quantity;
         $product->brand_id = $request->brand_id;
         $product->category_id = $request->category_id;
+        $product->collection_id = $request->collection_id;
         $product->save();
 
         //check if the product has an image uploaded
@@ -81,7 +87,7 @@ class AdminProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with('brand', 'category', 'product_images')->findOrFail($id);
+        $product = Product::with('brand', 'category', 'collection', 'product_images')->findOrFail($id);
         return inertia('Admin/Products/Show', [
             'product' => $product
         ]);
@@ -92,13 +98,15 @@ class AdminProductController extends Controller
      */
     public function edit(string $id)
     {
-        $product = Product::with('brand', 'category', 'product_images')->findOrFail($id);
+        $product = Product::with('brand', 'category', 'collection', 'product_images')->findOrFail($id);
         $brands = Brand::all();
         $categories = Category::all();
+        $collections = Collection::all();
         return inertia('Admin/Products/Edit', [
             'product' => $product,
             'brands' => $brands,
-            'categories' => $categories
+            'categories' => $categories,
+            'collections' => $collections
         ]);
     }
 
@@ -116,6 +124,7 @@ class AdminProductController extends Controller
         $product->quantity = $request->quantity;
         $product->brand_id = $request->brand_id;
         $product->category_id = $request->category_id;
+        $product->collection_id = $request->collection_id;
 
         //check if the product has an image uploaded
         if ($request->hasFile('product_images')) {

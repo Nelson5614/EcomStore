@@ -21,6 +21,7 @@ class Product extends Model
         'deleted_by',
         'brand_id',
         'category_id',
+        'collection_id',
     ];
 
     public function brand()
@@ -46,5 +47,10 @@ class Product extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function collection()
+    {
+        return $this->belongsTo(Collection::class);
     }
 }

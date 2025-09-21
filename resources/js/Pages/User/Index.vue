@@ -10,6 +10,7 @@ const page = usePage();
 defineProps({
     products: Array,
     categories: Array,
+    collections: Array,
     bestSellers: Array,
 });
 
@@ -138,80 +139,84 @@ const formatPrice = (price) => {
                         Discover our handpicked furniture collections for every space
                     </p>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <!-- Living Room Collection -->
-                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
-                        <div class="relative h-64 overflow-hidden">
-                            <img src="/product_images/livingroom.jpg" 
-                                 alt="Living Room Collection" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                                <h3 class="text-xl font-bold mb-1">Living Room</h3>
-                                <p class="text-sm opacity-90 mb-3">Comfort & Style</p>
-                                <div class="flex items-center text-sm">
-                                    <span class="mr-3">24 items</span>
-                                    <span class="text-amber-300">From M299</span>
-                                </div>
+
+                <div v-if="collections && collections.length > 0" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div
+                        v-for="collection in collections"
+                        :key="collection.id"
+                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-200 cursor-pointer"
+                        @click="router.get(route('collections.show', collection.slug))"
+                    >
+                        <div class="aspect-video overflow-hidden bg-gray-50">
+                            <img
+                                v-if="collection.products && collection.products.length > 0 && collection.products[0].product_images.length > 0"
+                                :src="'/' + collection.products[0].product_images[0].image"
+                                :alt="collection.name"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            >
+                            <div v-else class="w-full h-full flex items-center justify-center bg-gradient-to-br from-amber-100 to-amber-200">
+                                <svg class="w-16 h-16 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
                             </div>
                         </div>
-                    </div>
-                    
-                    <!-- Bedroom Collection -->
-                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
-                        <div class="relative h-64 overflow-hidden">
-                            <img src="/product_images/bedroom.jpg" 
-                                 alt="Bedroom Collection" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                                <h3 class="text-xl font-bold mb-1">Bedroom</h3>
-                                <p class="text-sm opacity-90 mb-3">Rest & Relaxation</p>
-                                <div class="flex items-center text-sm">
-                                    <span class="mr-3">18 items</span>
-                                    <span class="text-amber-300">From M199</span>
-                                </div>
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-bold text-gray-900 group-hover:text-amber-600 transition-colors duration-200">
+                                    {{ collection.name }}
+                                </h3>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                                    {{ collection.products ? collection.products.length : 0 }} Items
+                                </span>
                             </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Home Office Collection -->
-                    <div class="group relative overflow-hidden rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer">
-                        <div class="relative h-64 overflow-hidden">
-                            <img src="/product_images/homeoffice.jpg" 
-                                 alt="Home Office Collection" 
-                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                            <div class="absolute bottom-0 left-0 right-0 p-6 text-white">
-                                <h3 class="text-xl font-bold mb-1">Home Office</h3>
-                                <p class="text-sm opacity-90 mb-3">Productivity & Comfort</p>
-                                <div class="flex items-center text-sm">
-                                    <span class="mr-3">15 items</span>
-                                    <span class="text-amber-300">From M149</span>
+                            <p class="text-gray-600 text-sm mb-4">
+                                {{ collection.description || 'Explore our curated collection of premium furniture pieces.' }}
+                            </p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-amber-600 font-medium text-sm group-hover:text-amber-700 transition-colors duration-200">
+                                    Explore Collection →
+                                </span>
+                                <div class="flex -space-x-2">
+                                    <div v-for="i in Math.min(3, collection.products ? collection.products.length : 0)" :key="i" class="w-8 h-8 rounded-full bg-amber-200 border-2 border-white"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
+
+                <div v-else class="text-center py-12">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-2">No Collections Available</h3>
+                    <p class="text-gray-500">Check back soon for new curated collections.</p>
+                </div>
+
                 <!-- Collection Stats -->
                 <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-6">
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-amber-600 mb-1">57</div>
+                        <div class="text-2xl font-bold text-amber-600 mb-1">
+                            {{ collections ? collections.reduce((total, collection) => total + (collection.products ? collection.products.length : 0), 0) : 0 }}
+                        </div>
                         <div class="text-sm text-gray-600">Total Items</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-amber-600 mb-1">12</div>
-                        <div class="text-sm text-gray-600">Brands</div>
+                        <div class="text-2xl font-bold text-blue-600 mb-1">
+                            {{ collections ? collections.length : 0 }}
+                        </div>
+                        <div class="text-sm text-gray-600">Collections</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-amber-600 mb-1">8</div>
+                        <div class="text-2xl font-bold text-green-600 mb-1">
+                            {{ categories ? categories.length : 0 }}
+                        </div>
                         <div class="text-sm text-gray-600">Categories</div>
                     </div>
                     <div class="text-center">
-                        <div class="text-2xl font-bold text-amber-600 mb-1">4.8</div>
-                        <div class="text-sm text-gray-600">Rating</div>
+                        <div class="text-2xl font-bold text-purple-600 mb-1">4.8</div>
+                        <div class="text-sm text-gray-600">Avg Rating</div>
                     </div>
                 </div>
             </div>

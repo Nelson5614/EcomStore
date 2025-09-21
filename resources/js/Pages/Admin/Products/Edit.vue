@@ -98,6 +98,25 @@
                 <p v-if="form.errors.category_id" class="mt-1 text-sm text-red-600">{{ form.errors.category_id }}</p>
               </div>
 
+              <!-- Collection -->
+              <div>
+                <label for="collection_id" class="block text-sm font-medium text-gray-700">
+                  Collection
+                </label>
+                <select
+                  id="collection_id"
+                  v-model="form.collection_id"
+                  class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  :class="{ 'border-red-500': form.errors.collection_id }"
+                >
+                  <option value="">Select a collection (optional)</option>
+                  <option v-for="collection in collections" :key="collection.id" :value="collection.id">
+                    {{ collection.name }}
+                  </option>
+                </select>
+                <p v-if="form.errors.collection_id" class="mt-1 text-sm text-red-600">{{ form.errors.collection_id }}</p>
+              </div>
+
               <!-- Price -->
               <div>
                 <label for="price" class="block text-sm font-medium text-gray-700">
@@ -278,7 +297,8 @@ import AdminLayout from "@/Pages/Components/AdminLAyout.vue";
 const props = defineProps({
   product: Object,
   brands: Array,
-  categories: Array
+  categories: Array,
+  collections: Array
 });
 
 const form = useForm({
@@ -286,6 +306,7 @@ const form = useForm({
   description: props.product.description || '',
   brand_id: props.product.brand_id,
   category_id: props.product.category_id,
+  collection_id: props.product.collection_id || '',
   price: props.product.price,
   quantity: props.product.quantity,
   status: props.product.status,
@@ -335,6 +356,7 @@ const submit = () => {
   formData.append('description', form.description);
   formData.append('brand_id', form.brand_id);
   formData.append('category_id', form.category_id);
+  formData.append('collection_id', form.collection_id);
   formData.append('price', form.price);
   formData.append('quantity', form.quantity);
   formData.append('status', form.status);
