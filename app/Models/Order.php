@@ -12,13 +12,14 @@ class Order extends Model
         'total',
         'status',
         'session_id',
+        'user_address_id',
         'created_by',
         'updated_by',
     ];
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
     public function userAddress()
@@ -26,8 +27,18 @@ class Order extends Model
         return $this->belongsTo(UserAddress::class);
     }
 
-    public function orderitems()
+    public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }

@@ -7,7 +7,7 @@
           <p class="text-sm sm:text-base text-gray-600">Manage your product categories</p>
         </div>
         <Link
-          :href="route('categories.create')"
+          :href="route('admin.categories.create')"
           class="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           Add New Category
@@ -34,7 +34,7 @@
               </div>
               <div class="flex space-x-2">
                 <Link
-                  :href="route('categories.edit', category.id)"
+                  :href="route('admin.categories.edit', category.id)"
                   class="text-blue-600 hover:text-blue-900 text-sm"
                 >
                   Edit
@@ -97,7 +97,7 @@
                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-1 sm:space-y-0">
                     <Link
-                      :href="route('categories.edit', category.id)"
+                      :href="route('admin.categories.edit', category.id)"
                       class="text-blue-600 hover:text-blue-900"
                     >
                       Edit
@@ -177,7 +177,7 @@ const confirmDelete = (category) => {
 const deleteCategory = () => {
   if (categoryToDelete.value) {
     const form = useForm({});
-    form.delete(route('categories.destroy', categoryToDelete.value.id), {
+    form.delete(route('admin.categories.destroy', categoryToDelete.value.id), {
       onSuccess: () => {
         showDeleteModal.value = false;
         categoryToDelete.value = null;

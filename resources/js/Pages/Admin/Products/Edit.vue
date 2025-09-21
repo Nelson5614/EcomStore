@@ -7,7 +7,7 @@
           <p class="text-gray-600">Update product information</p>
         </div>
         <Link
-          :href="route('products.index')"
+          :href="route('admin.products.index')"
           class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
           Back to Products
@@ -247,7 +247,7 @@
           <!-- Form Actions -->
           <div class="mt-6 flex justify-end space-x-3">
             <Link
-              :href="route('products.index')"
+              :href="route('admin.products.index')"
               class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Cancel
@@ -318,7 +318,7 @@ const removeNewImage = (index) => {
 
 const deleteExistingImage = (imageId) => {
   if (confirm('Are you sure you want to delete this image?')) {
-    Link.delete(route('products.deleteimage', imageId), {
+    Link.delete(route('admin.products.deleteimage', imageId), {
       preserveScroll: true,
       onSuccess: () => {
         // Reload the page to update the product images
@@ -344,7 +344,7 @@ const submit = () => {
     formData.append(`images[${index}]`, image);
   });
   
-  form.post(route('products.update', props.product.id), {
+  form.post(route('admin.products.update', props.product.id), {
     data: formData,
     method: 'POST',
     preserveScroll: true,

@@ -7,7 +7,7 @@
           <p class="text-sm sm:text-base text-gray-600">Manage your product brands</p>
         </div>
         <Link
-          :href="route('brands.create')"
+          :href="route('admin.brands.create')"
           class="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           Add New Brand
@@ -34,7 +34,7 @@
               </div>
               <div class="flex space-x-2">
                 <Link
-                  :href="route('brands.edit', brand.id)"
+                  :href="route('admin.brands.edit', brand.id)"
                   class="text-blue-600 hover:text-blue-900 text-sm"
                 >
                   Edit
@@ -97,7 +97,7 @@
                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div class="flex flex-col sm:flex-row sm:space-x-2 space-y-1 sm:space-y-0">
                     <Link
-                      :href="route('brands.edit', brand.id)"
+                      :href="route('admin.brands.edit', brand.id)"
                       class="text-blue-600 hover:text-blue-900"
                     >
                       Edit
@@ -176,7 +176,7 @@ const confirmDelete = (brand) => {
 
 const deleteBrand = () => {
   if (brandToDelete.value) {
-    Link.delete(route('brands.destroy', brandToDelete.value.id));
+    Link.delete(route('admin.brands.destroy', brandToDelete.value.id));
     showDeleteModal.value = false;
     brandToDelete.value = null;
   }

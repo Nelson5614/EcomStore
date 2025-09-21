@@ -7,7 +7,7 @@
           <p class="text-sm sm:text-base text-gray-600">Add a new brand to your store</p>
         </div>
         <Link
-          :href="route('brands.index')"
+          :href="route('admin.brands.index')"
           class="inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           Back to Brands
@@ -79,7 +79,7 @@
           <!-- Form Actions -->
           <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end sm:space-x-3 space-y-3 sm:space-y-0">
             <Link
-              :href="route('brands.index')"
+              :href="route('admin.brands.index')"
               class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
             >
               Cancel
@@ -112,7 +112,7 @@ const form = useForm({
 });
 
 const submit = () => {
-  form.post(route('brands.store'), {
+  form.post(route('admin.brands.store'), {
     onSuccess: () => {
       form.reset('name', 'description');
     },

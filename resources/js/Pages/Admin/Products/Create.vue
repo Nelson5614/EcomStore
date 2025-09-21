@@ -7,7 +7,7 @@
           <p class="text-sm sm:text-base text-gray-600">Add a new product to your store</p>
         </div>
         <Link
-          :href="route('products.index')"
+          :href="route('admin.products.index')"
           class="inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           Back to Products
@@ -231,7 +231,7 @@
           <!-- Form Actions -->
           <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end sm:space-x-3 space-y-3 sm:space-y-0">
             <Link
-              :href="route('products.index')"
+              :href="route('admin.products.index')"
               class="inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto"
             >
               Cancel
@@ -318,7 +318,7 @@ const submit = () => {
     formData.append(`images[${index}]`, image);
   });
   
-  form.post(route('products.store'), {
+  form.post(route('admin.products.store'), {
     data: formData,
     onSuccess: () => {
       form.reset('name', 'description', 'brand_id', 'category_id', 'price', 'quantity', 'status', 'featured');

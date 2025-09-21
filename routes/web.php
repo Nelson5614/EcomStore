@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBrandController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminCategoryController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\AdminOrderController;
 
 //user routes
 
@@ -46,8 +48,11 @@ Route::group(['prefix' => 'admin',], function () {
 
 Route::middleware(['auth','admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
-    Route::resource('brands', AdminBrandController::class);
-    Route::resource('categories', AdminCategoryController::class);
-    Route::resource('products', AdminProductController::class);
+    Route::resource('brands', AdminBrandController::class)->names('admin.brands');
+    Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
+    Route::resource('products', AdminProductController::class)->names('admin.products');
     Route::delete('/products/image/{id}',[AdminProductController::class,'deleteImage'])->name('admin.products.image.delete');
+    Route::resource('users', AdminUserController::class)->names('admin.users');
+    Route::resource('orders', AdminOrderController::class)->names('admin.orders');
+    Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status.update');
 });

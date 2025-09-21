@@ -133,7 +133,7 @@
         <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-3 sm:mb-4">
             <h2 class="text-base sm:text-lg font-semibold text-gray-900 mb-2 sm:mb-0">Low Stock Alert</h2>
-            <Link :href="route('products.index')" class="text-blue-600 hover:text-blue-800 text-sm">View all</Link>
+            <Link :href="route('admin.products.index')" class="text-blue-600 hover:text-blue-800 text-sm">View all</Link>
           </div>
           <div v-if="lowStockProducts.length > 0" class="space-y-2 sm:space-y-3">
             <div v-for="product in lowStockProducts" :key="product.id" class="flex flex-col sm:flex-row sm:items-center justify-between p-3 border border-gray-200 rounded-lg hover:bg-gray-50">
