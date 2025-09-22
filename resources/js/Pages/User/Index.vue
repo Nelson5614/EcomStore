@@ -50,13 +50,7 @@ const formatPrice = (price) => {
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                     <!-- Left Side - Text Content -->
                     <div class="text-center lg:text-left">
-                        <div class="inline-flex items-center bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium mb-6">
-                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                            </svg>
-                            Premium Quality Furniture
-                        </div>
-                        
+                       
                         <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                             Transform Your
                             <span class="text-amber-600">Living Space</span>
@@ -238,11 +232,11 @@ const formatPrice = (price) => {
                     </p>
                 </div>
 
-                <div v-if="bestSellers && bestSellers.length > 0" class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div v-if="bestSellers && bestSellers.length > 0" class="mt-6 grid grid-cols-1 gap-x-8 gap-y-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
                     <div
                         v-for="product in bestSellers"
                         :key="product.id"
-                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-red-200"
+                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-200"
                     >
                         <!-- Product Image Container -->
                         <div class="relative aspect-square overflow-hidden bg-gray-50">
@@ -319,26 +313,26 @@ const formatPrice = (price) => {
                             </div>
                             
                             <!-- Action Buttons -->
-                            <div class="mt-6 flex gap-3">
+                            <div class="mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
                                 <button
                                     @click="addToCart(product)"
                                     :disabled="product.quantity === 0"
-                                    class="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                                    class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                                     </svg>
-                                    Add to Cart
+                                    <span class="truncate">Add to Cart</span>
                                 </button>
                                 <Link
                                     :href="route('products.show', product.id)"
-                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 text-base"
+                                    class="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-800 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    View
+                                    <span class="truncate">View</span>
                                 </Link>
                             </div>
                         </div>
@@ -433,26 +427,26 @@ const formatPrice = (price) => {
                             </div>
                             
                             <!-- Action Buttons -->
-                            <div class="mt-6 flex gap-3">
+                            <div class="mt-6 flex flex-col sm:flex-row gap-2 sm:gap-3">
                                 <button
                                     @click="addToCart(product)"
                                     :disabled="product.quantity === 0"
-                                    class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                                    class="w-full sm:w-auto bg-amber-600 hover:bg-amber-700 text-white py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                                     </svg>
-                                    Add to Cart
+                                    <span class="truncate">Add to Cart</span>
                                 </button>
                                 <Link
                                     :href="route('products.show', product.id)"
-                                    class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-800 py-3 px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-2 text-base"
+                                    class="w-full sm:w-auto bg-gray-100 hover:bg-gray-200 text-gray-800 py-2.5 sm:py-3 px-3 sm:px-4 rounded-lg font-medium transition-colors duration-200 flex items-center justify-center gap-1.5 sm:gap-2 text-sm sm:text-base whitespace-nowrap min-w-0"
                                 >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 sm:w-5 sm:h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
-                                    View
+                                    <span class="truncate">View</span>
                                 </Link>
                             </div>
                         </div>
@@ -462,44 +456,132 @@ const formatPrice = (price) => {
         </div>
 
         <!-- Categories Section -->
-        <div class="bg-gray-50 py-16">
+        <div class="bg-gradient-to-br from-gray-50 to-amber-50 py-16">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-gray-900 mb-4">Shop by Category</h2>
+                    <div class="inline-flex items-center bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        Browse Categories
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Shop by Category</h2>
                     <p class="text-lg text-gray-600 max-w-2xl mx-auto">
-                        Browse our wide range of products organized by category
+                        Explore our curated collections and find exactly what you're looking for
                     </p>
                 </div>
                 
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     <div
-                        v-for="category in categories"
+                        v-for="(category, index) in categories"
                         :key="category.id"
-                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-200 cursor-pointer"
+                        class="group relative bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-400 overflow-hidden cursor-pointer transform hover:-translate-y-1"
                     >
                         <Link :href="route('categories.show', category.slug)" class="block">
-                            <!-- Category Image/Icon Container -->
-                            <div class="aspect-square bg-gradient-to-br from-amber-100 to-amber-200 flex items-center justify-center p-8">
-                                <div class="text-center">
-                                    <div class="w-16 h-16 mx-auto mb-4 bg-amber-600 rounded-full flex items-center justify-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 text-white">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" />
+                            <!-- Category Header with Dynamic Color -->
+                            <div 
+                                class="h-32 relative overflow-hidden"
+                                :class="{
+                                    'bg-gradient-to-br from-blue-500 to-blue-600': index % 6 === 0,
+                                    'bg-gradient-to-br from-green-500 to-green-600': index % 6 === 1,
+                                    'bg-gradient-to-br from-purple-500 to-purple-600': index % 6 === 2,
+                                    'bg-gradient-to-br from-red-500 to-red-600': index % 6 === 3,
+                                    'bg-gradient-to-br from-indigo-500 to-indigo-600': index % 6 === 4,
+                                    'bg-gradient-to-br from-pink-500 to-pink-600': index % 6 === 5
+                                }"
+                            >
+                                <!-- Subtle Pattern Overlay -->
+                                <div class="absolute inset-0 opacity-20 bg-repeat" style="background-size: 20px 20px; background-image: linear-gradient(45deg, rgba(255,255,255,0.1) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.1) 75%, transparent 75%, transparent);"></div>
+                                
+                                <!-- Category Icon -->
+                                <div class="absolute inset-0 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                                        <svg 
+                                            :class="{
+                                                'text-blue-200': index % 6 === 0,
+                                                'text-green-200': index % 6 === 1,
+                                                'text-purple-200': index % 6 === 2,
+                                                'text-red-200': index % 6 === 3,
+                                                'text-indigo-200': index % 6 === 4,
+                                                'text-pink-200': index % 6 === 5
+                                            }"
+                                            class="w-6 h-6" 
+                                            fill="none" 
+                                            viewBox="0 0 24 24" 
+                                            stroke="currentColor"
+                                        >
+                                            <path 
+                                                v-if="index % 6 === 0"
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round" 
+                                                stroke-width="2" 
+                                                d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                            />
+                                            <path 
+                                                v-else-if="index % 6 === 1"
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round" 
+                                                stroke-width="2" 
+                                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+                                            />
+                                            <path 
+                                                v-else-if="index % 6 === 2"
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round" 
+                                                stroke-width="2" 
+                                                d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"
+                                            />
+                                            <path 
+                                                v-else-if="index % 6 === 3"
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round" 
+                                                stroke-width="2" 
+                                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                                            />
+                                            <path 
+                                                v-else-if="index % 6 === 4"
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round" 
+                                                stroke-width="2" 
+                                                d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+                                            />
+                                            <path 
+                                                v-else
+                                                stroke-linecap="round" 
+                                                stroke-linejoin="round" 
+                                                stroke-width="2" 
+                                                d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                            />
                                         </svg>
                                     </div>
-                                    <h3 class="text-lg font-semibold text-gray-900 group-hover:text-amber-600 transition-colors duration-200">
-                                        {{ category.name }}
-                                    </h3>
                                 </div>
                             </div>
                             
-                            <!-- Category Info -->
-                            <div class="p-4 text-center">
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
-                                    Shop Now
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-1">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
-                                    </svg>
-                                </span>
+                            <!-- Category Content -->
+                            <div class="p-6">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h3 class="text-xl font-bold text-gray-900 group-hover:text-amber-600 transition-colors duration-300">
+                                        {{ category.name }}
+                                    </h3>
+                                    <div class="w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center group-hover:bg-amber-200 transition-colors duration-300">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 text-amber-600">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                
+                                <p class="text-gray-600 text-sm mb-4 line-clamp-2">
+                                    Discover our curated collection of {{ category.name.toLowerCase() }} products
+                                </p>
+                                
+                                <div class="flex items-center">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-3 h-3 mr-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                        Explore Category
+                                    </span>
+                                </div>
                             </div>
                         </Link>
                     </div>

@@ -33,14 +33,14 @@ defineProps({
                                 <div class="text-right">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
                                           :class="{
-                                              'bg-yellow-100 text-yellow-800': order.status === 'pending',
+                                              'bg-yellow-100 text-yellow-800': order.status === 'pending_payment',
                                               'bg-blue-100 text-blue-800': order.status === 'processing',
                                               'bg-green-100 text-green-800': order.status === 'completed',
                                               'bg-red-100 text-red-800': order.status === 'cancelled'
                                           }">
-                                        {{ order.status.charAt(0).toUpperCase() + order.status.slice(1) }}
+                                        {{ order.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}
                                     </span>
-                                    <p class="mt-1 text-lg font-bold text-gray-900">${{ parseFloat(order.total_amount).toFixed(2) }}</p>
+                                    <p class="mt-1 text-lg font-bold text-gray-900">M{{ parseFloat(order.total || 0).toFixed(2) }}</p>
                                 </div>
                             </div>
                         </div>
@@ -49,13 +49,13 @@ defineProps({
                         <div class="px-6 py-4">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4">
-                                    <div v-for="item in order.orderItems.slice(0, 3)" :key="item.id" class="flex-shrink-0">
+                                    <div v-for="item in (order.orderItems || []).slice(0, 3)" :key="item.id" class="flex-shrink-0">
                                         <img :src="`/product_images/${item.product.image}`" 
                                              :alt="item.product.name"
                                              class="w-12 h-12 rounded-lg object-cover">
                                     </div>
-                                    <div v-if="order.orderItems.length > 3" class="text-sm text-gray-500">
-                                        +{{ order.orderItems.length - 3 }} more items
+                                    <div v-if="(order.orderItems || []).length > 3" class="text-sm text-gray-500">
+                                        +{{ (order.orderItems || []).length - 3 }} more items
                                     </div>
                                 </div>
                                 <Link :href="route('orders.show', order.id)" 

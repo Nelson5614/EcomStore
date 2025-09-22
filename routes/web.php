@@ -6,6 +6,7 @@ use Illuminate\Foundation\Application;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\UserAddressController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\AdminBrandController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminBestSellerController;
 use App\Http\Controllers\Admin\AdminCollectionController;
+use App\Http\Controllers\PaymentController;
 
 //user routes
 
@@ -48,6 +50,7 @@ Route::prefix('cart')->controller(CartController::class)->group(function () {
 Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
     Route::get('index', 'index')->name('checkout.index');
     Route::post('process', 'process')->name('checkout.process');
+    Route::get('payment/{order}', 'payment')->name('checkout.payment')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']);
     Route::get('success', 'success')->name('checkout.success');
     Route::get('cancel', 'cancel')->name('checkout.cancel');
 });
@@ -56,6 +59,19 @@ Route::prefix('checkout')->controller(CheckoutController::class)->group(function
 Route::prefix('orders')->controller(\App\Http\Controllers\User\OrderController::class)->group(function () {
     Route::get('/', 'index')->name('orders.index');
     Route::get('/{id}', 'show')->name('orders.show');
+});
+
+//payment routes
+Route::prefix('payments')->controller(PaymentController::class)->group(function () {
+    Route::get('methods', 'getPaymentMethods')->name('payments.methods');
+    Route::get('status/{transactionId}', 'checkPaymentStatus')->name('payments.status');
+    Route::post('mpesa/initiate', 'initiateMpesaPayment')->name('payments.mpesa.initiate')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']);
+});
+
+//user address routes
+Route::prefix('addresses')->controller(UserAddressController::class)->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
+    Route::get('create', 'create')->name('addresses.create');
+    Route::post('store', 'store')->name('addresses.store');
 });
 
 //admin routes- no auth required here

@@ -98,7 +98,7 @@ const formatDate = (date) => {
                                             <p class="text-sm text-gray-600">Quantity: {{ item.quantity }}</p>
                                         </div>
                                         <div class="text-sm font-medium text-gray-900">
-                                            {{ formatPrice(item.price * item.quantity) }}
+                                            {{ formatPrice(item.unit_price * item.quantity) }}
                                         </div>
                                     </div>
                                 </div>

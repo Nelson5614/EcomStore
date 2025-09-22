@@ -14,7 +14,7 @@ class Cart
     public static function getCount(): int
     {
         if ($user = Auth::user()) {
-            return CartItem::whereUserId($user->id)->count(); //sum('quantity')
+            return CartItem::whereUserId($user->id)->sum('quantity');
         } else {
             return array_reduce(self::getCookieCartItems(), fn ($carry) => $carry + 1, 0);
         }
@@ -23,7 +23,13 @@ class Cart
     public static function getCartItems()
     {
         if ($user = Auth::user()) {
-            return CartItem::whereUserId($user->id)->get()->map(fn (CartItem $item) => ['product_id' => $item->product_id, 'quantity' => $item->quantity]);
+            return CartItem::whereUserId($user->id)->with('product')->get()->map(fn (CartItem $item) => [
+                'id' => $item->id,
+                'user_id' => $item->user_id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->product->price
+            ]);
         } else {
             return self::getCookieCartItems();
         }

@@ -23,7 +23,7 @@ class CartController extends Controller
         $userAddress = null;
         
         if ($user) {
-            $userAddress = UserAddress::where('user_id', $user->id)->where('isMain', 1)->first();
+            $userAddress = UserAddress::where('user_id', $user->id)->latest()->first();
         }
         
         if (count($cartItemsData) > 0) {
@@ -117,7 +117,7 @@ class CartController extends Controller
         $user = $request->user();
         if ($user) {
             CartItem::query()->where(['user_id' => $user->id, 'product_id' => $product->id])->first()?->delete();
-            if (CartItem::count() <= 0) {
+            if (CartItem::where('user_id', $user->id)->count() <= 0) {
                 return redirect()->route('home')->with('info', 'your cart is empty');
             } else {
                 return redirect()->back()->with('success', 'item removed successfully');

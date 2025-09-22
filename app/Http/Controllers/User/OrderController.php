@@ -15,6 +15,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('created_by', Auth::id())
+            ->with(['orderItems.product'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 

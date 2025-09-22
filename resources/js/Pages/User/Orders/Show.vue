@@ -79,8 +79,8 @@ defineProps({
                                         <p class="text-sm text-gray-600">Quantity: {{ item.quantity }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-medium text-gray-900">${{ (parseFloat(item.price) * item.quantity).toFixed(2) }}</p>
-                                        <p class="text-sm text-gray-600">${{ parseFloat(item.price).toFixed(2) }} each</p>
+                                        <p class="text-sm font-medium text-gray-900">${{ (parseFloat(item.unit_price) * item.quantity).toFixed(2) }}</p>
+                                        <p class="text-sm text-gray-600">${{ parseFloat(item.unit_price).toFixed(2) }} each</p>
                                     </div>
                                 </div>
                             </div>

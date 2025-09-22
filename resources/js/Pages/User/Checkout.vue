@@ -12,7 +12,8 @@ const user = computed(() => page.props.auth.user);
 
 const form = useForm({
     user_address_id: '',
-    payment_method: 'cod',
+    payment_method: 'mpesa',
+    phone_number: '',
 });
 
 const selectedAddress = ref(null);
@@ -47,22 +48,42 @@ const handleAddAddress = () => {
         alert('You should login or register before checkout');
         return;
     }
-    // If user is logged in, proceed to profile page
-    window.location.href = route('profile.show');
+    // If user is logged in, proceed to address creation page
+    window.location.href = route('addresses.create');
 };
 
 const submitOrder = () => {
+    console.log('Submit order called');
+    console.log('Form data:', form.data());
+    
     if (!form.user_address_id) {
         alert('Please select an address');
         return;
     }
 
+    if (!form.phone_number) {
+        alert('Please enter your M-Pesa phone number');
+        return;
+    }
+
+    console.log('Submitting form to:', route('checkout.process'));
+    
     form.post(route('checkout.process'), {
-        onSuccess: () => {
-            // Order processed successfully
+        onSuccess: (response) => {
+            console.log('Order processed successfully:', response);
+            // The redirect will be handled by the server
         },
         onError: (errors) => {
             console.error('Order processing errors:', errors);
+            // Show specific error messages
+            let errorMessage = 'There was an error processing your order.\n\n';
+            for (const [key, value] of Object.entries(errors)) {
+                errorMessage += `${key}: ${value}\n`;
+            }
+            alert(errorMessage);
+        },
+        onFinish: () => {
+            console.log('Form submission finished');
         }
     });
 };
@@ -150,31 +171,38 @@ const submitOrder = () => {
                             </div>
                             
                             <div class="p-6 space-y-4">
-                                <div class="border rounded-lg p-4 cursor-pointer hover:border-amber-500 transition-colors"
-                                     :class="{ 'border-amber-500 bg-amber-50': form.payment_method === 'cod' }"
-                                     @click="form.payment_method = 'cod'">
+                                <div class="border rounded-lg p-4 cursor-pointer border-amber-500 bg-amber-50">
                                     <div class="flex items-center">
-                                        <input type="radio" value="cod" v-model="form.payment_method"
-                                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
+                                        <input type="radio" value="mpesa" v-model="form.payment_method"
+                                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300" checked>
                                         <div class="ml-3">
-                                            <p class="text-sm font-medium text-gray-900">Cash on Delivery</p>
-                                            <p class="text-sm text-gray-600">Pay when you receive your order</p>
+                                            <p class="text-sm font-medium text-gray-900">M-Pesa</p>
+                                            <p class="text-sm text-gray-600">Pay with M-Pesa mobile money</p>
                                         </div>
                                     </div>
                                 </div>
-
-                                <div class="border rounded-lg p-4 cursor-pointer hover:border-amber-500 transition-colors opacity-50"
-                                     :class="{ 'border-amber-500 bg-amber-50': form.payment_method === 'card' }"
-                                     @click="form.payment_method = 'card'">
-                                    <div class="flex items-center">
-                                        <input type="radio" value="card" v-model="form.payment_method"
-                                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
-                                        <div class="ml-3">
-                                            <p class="text-sm font-medium text-gray-900">Credit/Debit Card</p>
-                                            <p class="text-sm text-gray-600">Pay securely with your card (Coming Soon)</p>
-                                        </div>
-                                    </div>
-                                </div>
+                            </div>
+                            
+                            <!-- M-Pesa Phone Number Field -->
+                            <div class="px-6 pb-6">
+                                <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-2">
+                                    M-Pesa Phone Number <span class="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="tel"
+                                    id="phone_number"
+                                    v-model="form.phone_number"
+                                    placeholder="Enter your M-Pesa phone number"
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                                    :class="{ 'border-red-500': form.errors.phone_number }"
+                                    required
+                                >
+                                <p v-if="form.errors.phone_number" class="mt-1 text-sm text-red-600">
+                                    {{ form.errors.phone_number }}
+                                </p>
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Enter your M-Pesa registered phone number (e.g., 58888888)
+                                </p>
                             </div>
                         </div>
                     </div>
