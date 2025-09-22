@@ -1,6 +1,6 @@
 <template>
   <AdminLayout>
-    <div class="p-4 sm:p-6">
+    <div class="p-4 sm:p-6 overflow-y-auto max-h-screen">
       <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sm:mb-6">
         <div class="mb-4 sm:mb-0">
           <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Create New Collection</h1>
@@ -8,7 +8,7 @@
         </div>
         <Link
           :href="route('admin.collections.index')"
-          class="inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full sm:w-auto justify-center"
+          class="inline-flex items-center px-3 sm:px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
         >
           Back to Collections
         </Link>
@@ -67,7 +67,7 @@
                 id="description"
                 v-model="form.description"
                 rows="3 sm:4"
-                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-purple-500 focus:border-purple-500 text-sm"
+                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
                 :class="{ 'border-red-500': form.errors.description }"
                 placeholder="Enter collection description (optional)"
               ></textarea>
@@ -86,7 +86,7 @@
                     type="radio"
                     v-model="form.is_active"
                     :value="true"
-                    class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
                   <span class="ml-2 text-sm text-gray-700">Active</span>
                 </label>
@@ -95,7 +95,7 @@
                     type="radio"
                     v-model="form.is_active"
                     :value="false"
-                    class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300"
+                    class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
                   />
                   <span class="ml-2 text-sm text-gray-700">Inactive</span>
                 </label>
@@ -109,14 +109,14 @@
           <div class="mt-4 sm:mt-6 flex flex-col sm:flex-row sm:justify-end sm:space-x-3 space-y-3 sm:space-y-0">
             <Link
               :href="route('admin.collections.index')"
-              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full sm:w-auto justify-center"
+              class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 w-full sm:w-auto justify-center"
             >
               Cancel
             </Link>
             <button
               type="submit"
               :disabled="form.processing"
-              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 w-full sm:w-auto justify-center"
+              class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 w-full sm:w-auto justify-center"
             >
               <svg v-if="form.processing" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

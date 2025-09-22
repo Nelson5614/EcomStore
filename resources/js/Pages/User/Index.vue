@@ -649,19 +649,19 @@ const formatPrice = (price) => {
                 <div class="mt-16 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8">
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
                         <div>
-                            <div class="text-3xl font-bold text-blue-600 mb-2">5000+</div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">5+</div>
                             <div class="text-gray-600">Happy Customers</div>
                         </div>
                         <div>
-                            <div class="text-3xl font-bold text-blue-600 mb-2">4.9/5</div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">4.2/5</div>
                             <div class="text-gray-600">Average Rating</div>
                         </div>
                         <div>
-                            <div class="text-3xl font-bold text-blue-600 mb-2">10+</div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">2+</div>
                             <div class="text-gray-600">Years Experience</div>
                         </div>
                         <div>
-                            <div class="text-3xl font-bold text-blue-600 mb-2">98%</div>
+                            <div class="text-3xl font-bold text-blue-600 mb-2">93%</div>
                             <div class="text-gray-600">Satisfaction Rate</div>
                         </div>
                     </div>

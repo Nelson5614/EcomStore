@@ -85,4 +85,15 @@ class UserController extends Controller
             'products' => $products,
         ]);
     }
+
+    public function products()
+    {
+        $products = Product::with('brand', 'category', 'collection', 'product_images')
+            ->orderBy('id', 'asc')
+            ->paginate(12);
+        
+        return Inertia::render('User/Products', [
+            'products' => $products,
+        ]);
+    }
 }

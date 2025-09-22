@@ -18,6 +18,7 @@ use App\Http\Controllers\Admin\AdminCollectionController;
 //user routes
 
 Route::get('/', [UserController::class, 'index'])->name('home');
+Route::get('/products', [UserController::class, 'products'])->name('products.index');
 Route::get('/products/{id}', [UserController::class, 'show'])->name('products.show');
 Route::get('/categories/{slug}', [UserController::class, 'category'])->name('categories.show');
 Route::get('/collections/{slug}', [UserController::class, 'collection'])->name('collections.show');
@@ -51,8 +52,8 @@ Route::group(['prefix' => 'admin',], function () {
 
 //admin routes- this routes are protected
 
-Route::middleware(['auth','admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.index');
+Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.index');
     Route::resource('brands', AdminBrandController::class)->names('admin.brands');
     Route::resource('categories', AdminCategoryController::class)->names('admin.categories');
     Route::resource('products', AdminProductController::class)->names('admin.products');

@@ -90,7 +90,7 @@
                   class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   :class="{ 'border-red-500': form.errors.category_id }"
                 >
-                  <option value="">Select a category</option>
+                  <option value="">Select a categor</option>
                   <option v-for="category in categories" :key="category.id" :value="category.id">
                     {{ category.name }}
                   </option>
@@ -120,7 +120,7 @@
               <!-- Price -->
               <div>
                 <label for="price" class="block text-sm font-medium text-gray-700">
-                  Price (MWK) <span class="text-red-500">*</span>
+                  Price (LSL) <span class="text-red-500">*</span>
                 </label>
                 <input
                   type="number"
@@ -327,14 +327,15 @@ const submit = () => {
   const cleanPrice = form.price ? form.price.toString().replace(/[^0-9.]/g, '') : '';
   
   formData.append('name', form.name);
+  formData.append('slug', generateSlug(form.name));
   formData.append('description', form.description);
   formData.append('brand_id', form.brand_id);
   formData.append('category_id', form.category_id);
   formData.append('collection_id', form.collection_id);
   formData.append('price', cleanPrice);
   formData.append('quantity', form.quantity);
-  formData.append('status', form.status);
-  formData.append('featured', form.featured);
+  formData.append('is_published', form.status === 'active' ? 1 : 0);
+  formData.append('instock', form.status !== 'out_of_stock' ? 1 : 0);
   
   form.images.forEach((image, index) => {
     formData.append(`images[${index}]`, image);

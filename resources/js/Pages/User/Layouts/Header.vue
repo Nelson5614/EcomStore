@@ -29,7 +29,7 @@ const isMenuOpen = ref(false);
                     <Link :href="route('home')" class="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-medium transition-colors">
                         Home
                     </Link>
-                    <Link href="#products" class="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-medium transition-colors">
+                    <Link :href="route('products.index')" class="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-medium transition-colors">
                         Products
                     </Link>
                     <Link href="#about" class="text-gray-700 hover:text-amber-600 px-3 py-2 text-sm font-medium transition-colors">
@@ -85,7 +85,7 @@ const isMenuOpen = ref(false);
                     <Link :href="route('home')" class="block px-3 py-2 text-gray-700 hover:text-amber-600 hover:bg-gray-50 rounded-md text-base font-medium">
                         Home
                     </Link>
-                    <Link href="#products" class="block px-3 py-2 text-gray-700 hover:text-amber-600 hover:bg-gray-50 rounded-md text-base font-medium">
+                    <Link :href="route('products.index')" class="block px-3 py-2 text-gray-700 hover:text-amber-600 hover:bg-gray-50 rounded-md text-base font-medium">
                         Products
                     </Link>
                     <Link href="#about" class="block px-3 py-2 text-gray-700 hover:text-amber-600 hover:bg-gray-50 rounded-md text-base font-medium">

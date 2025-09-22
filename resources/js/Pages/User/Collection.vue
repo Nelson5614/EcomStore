@@ -45,7 +45,7 @@ const formatPrice = (price) => {
     <UserLayout>
         <div class="bg-white">
             <!-- Header -->
-            <div class="bg-gradient-to-r from-purple-600 to-purple-700 text-white py-12">
+            <div class="bg-gradient-to-r from-amber-600 to-amber-700 text-white py-12">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div class="text-center">
                         <h1 class="text-3xl sm:text-4xl font-bold mb-4">{{ collection.name }}</h1>
@@ -69,7 +69,7 @@ const formatPrice = (price) => {
                     <div
                         v-for="product in products"
                         :key="product.id"
-                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-purple-200"
+                        class="group relative bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-amber-200"
                     >
                         <!-- Product Image Container -->
                         <div class="relative aspect-square overflow-hidden bg-gray-50">
@@ -101,8 +101,8 @@ const formatPrice = (price) => {
                         <div class="p-6">
                             <div class="flex items-start justify-between mb-2">
                                 <div class="flex-1">
-                                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-purple-600 transition-colors duration-200">
-                                        <Link :href="route('products.show', product.id)" class="hover:text-purple-600">
+                                    <h3 class="text-lg font-semibold text-gray-900 line-clamp-2 group-hover:text-amber-600 transition-colors duration-200">
+                                        <Link :href="route('products.show', product.id)" class="hover:text-amber-600">
                                             {{ product.title }}
                                         </Link>
                                     </h3>
@@ -133,7 +133,7 @@ const formatPrice = (price) => {
                                 <button
                                     @click="addToCart(product)"
                                     :disabled="product.quantity === 0"
-                                    class="flex-1 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
+                                    class="flex-1 bg-amber-600 hover:bg-amber-700 text-white py-3 px-4 rounded-lg font-medium transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-base"
                                 >
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -163,7 +163,7 @@ const formatPrice = (price) => {
                     <h3 class="mt-2 text-sm font-medium text-gray-900">No products found</h3>
                     <p class="mt-1 text-sm text-gray-500">There are no products in this collection yet.</p>
                     <div class="mt-6">
-                        <Link :href="route('home')" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        <Link :href="route('home')" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500">
                             Continue Shopping
                         </Link>
                     </div>

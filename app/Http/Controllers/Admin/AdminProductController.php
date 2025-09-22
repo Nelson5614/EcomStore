@@ -54,13 +54,15 @@ class AdminProductController extends Controller
         //dd($request->file('product_images'));
         $product = new Product();
         $product->title = $request->title;
-        $product->slug = $request->slug;
+        $product->slug = $request->slug ?? Str::slug($request->title);
         $product->description = $request->description;
         $product->price = $request->price;
         $product->quantity = $request->quantity;
         $product->brand_id = $request->brand_id;
         $product->category_id = $request->category_id;
         $product->collection_id = $request->collection_id;
+        $product->is_published = $request->is_published ? 1 : 0;
+        $product->instock = $request->instock ? 1 : 0;
         $product->save();
 
         //check if the product has an image uploaded
@@ -125,6 +127,8 @@ class AdminProductController extends Controller
         $product->brand_id = $request->brand_id;
         $product->category_id = $request->category_id;
         $product->collection_id = $request->collection_id;
+        $product->is_published = $request->is_published ? 1 : 0;
+        $product->instock = $request->instock ? 1 : 0;
 
         //check if the product has an image uploaded
         if ($request->hasFile('product_images')) {

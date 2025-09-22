@@ -10,6 +10,7 @@ defineProps({
     products: Array,
     brands: Array,
     categories: Array,
+    collections: Array,
 });
 
 const isAddProduct = ref(false);
@@ -53,10 +54,11 @@ const description = ref("");
 const product_images = ref([]);
 const price = ref("");
 const quantity = ref("");
-const is_published = ref("");
-const instock = ref("");
+const is_published = ref(false);
+const instock = ref(true);
 const brand_id = ref(0);
 const category_id = ref(0);
+const collection_id = ref(0);
 //end product form data
 
 //add product method
@@ -69,6 +71,9 @@ const addProduct = async () => {
     formData.append("quantity", quantity.value);
     formData.append("brand_id", brand_id.value);
     formData.append("category_id", category_id.value);
+    formData.append("collection_id", collection_id.value);
+    formData.append("is_published", is_published.value ? 1 : 0);
+    formData.append("instock", instock.value ? 1 : 0);
 
     //add product images
     for (const image of productImages.value) {
@@ -105,10 +110,11 @@ const resetForm = () => {
     description.value = "";
     price.value = "";
     quantity.value = "";
-    is_published.value = "";
-    instock.value = "";
+    is_published.value = false;
+    instock.value = true;
     brand_id.value = 0;
     category_id.value = 0;
+    collection_id.value = 0;
     dialogImageUrl.value = "";
 };
 
@@ -130,6 +136,7 @@ const editProductModal = (product) => {
     instock.value = product.instock;
     brand_id.value = product.brand_id;
     category_id.value = product.category_id;
+    collection_id.value = product.collection_id || 0;
 };
 
 onMounted(() => {
@@ -167,6 +174,9 @@ const updateProduct = async () => {
     formData.append("quantity", quantity.value);
     formData.append("brand_id", brand_id.value);
     formData.append("category_id", category_id.value);
+    formData.append("collection_id", collection_id.value);
+    formData.append("is_published", is_published.value ? 1 : 0);
+    formData.append("instock", instock.value ? 1 : 0);
     formData.append("_method", "PUT");
 
     //add product images
@@ -352,6 +362,57 @@ const deleteProduct = async (product) => {
                             {{ brand.name }}
                         </option>
                     </select>
+                </div>
+
+                <div class="py-3">
+                    <label
+                        for="Collection"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >Select a collection (optional)</label
+                    >
+                    <select
+                        id="collections"
+                        v-model="collection_id"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    >
+                        <option value="0">No collection</option>
+                        <option
+                            v-for="collection in collections"
+                            :key="collection.id"
+                            :value="collection.id"
+                        >
+                            {{ collection.name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-center">
+                        <input
+                            id="is_published"
+                            type="checkbox"
+                            v-model="is_published"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label
+                            for="is_published"
+                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >Published</label
+                        >
+                    </div>
+                    <div class="flex items-center">
+                        <input
+                            id="instock"
+                            type="checkbox"
+                            v-model="instock"
+                            class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                        />
+                        <label
+                            for="instock"
+                            class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+                            >In Stock</label
+                        >
+                    </div>
                 </div>
 
                 <div class="grid md:gap-6">

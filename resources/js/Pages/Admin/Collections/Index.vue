@@ -8,7 +8,7 @@
         </div>
         <Link
           :href="route('admin.collections.create')"
-          class="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 w-full sm:w-auto justify-center"
+          class="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 w-full sm:w-auto justify-center"
         >
           Add New Collection
         </Link>
@@ -54,7 +54,7 @@
                 <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium" :class="collection.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'">
                   {{ collection.is_active ? 'Active' : 'Inactive' }}
                 </span>
-                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
                   {{ collection.products_count || 0 }} products
                 </span>
               </div>
