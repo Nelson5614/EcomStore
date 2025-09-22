@@ -4,6 +4,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\CheckoutController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminAuthController;
@@ -39,8 +40,22 @@ Route::middleware([
 Route::prefix('cart')->controller(CartController::class)->group(function () {
     Route::get('view', 'view')->name('cart.view');
     Route::post('store/{product}', [CartController::class, 'store'])->name('cart.store');
-    Route::patch('update/{prodcut}', [CartController::class, 'update'])->name('cart.update');
+    Route::patch('update/{product}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('delete/{product}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
+
+//checkout routes
+Route::prefix('checkout')->controller(CheckoutController::class)->group(function () {
+    Route::get('index', 'index')->name('checkout.index');
+    Route::post('process', 'process')->name('checkout.process');
+    Route::get('success', 'success')->name('checkout.success');
+    Route::get('cancel', 'cancel')->name('checkout.cancel');
+});
+
+//user orders routes
+Route::prefix('orders')->controller(\App\Http\Controllers\User\OrderController::class)->group(function () {
+    Route::get('/', 'index')->name('orders.index');
+    Route::get('/{id}', 'show')->name('orders.show');
 });
 
 //admin routes- no auth required here

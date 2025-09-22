@@ -13,32 +13,44 @@ use Inertia\Inertia;
 
 class CartController extends Controller
 {
-    public function view(Request $request, Product $product)
+    public function view(Request $request)
     {
 
         $user = $request->user();
+        $cartData = Cart::getProductsAndCartItems();
+        $products = $cartData[0];
+        $cartItemsData = $cartData[1];
+        $userAddress = null;
+        
         if ($user) {
-            $cartItems = CartItem::where('user_id', $user->id)->get();
             $userAddress = UserAddress::where('user_id', $user->id)->where('isMain', 1)->first();
-            if ($cartItems->count() > 0) {
-                return Inertia::render(
-                    'User/CartList',
-                    [
-                        'cartItems' => $cartItems,
-                        'userAddress' => $userAddress
-                    ]
-                );
-            }
-
         }
-        else {
-            $cartItems = Cart::getCookieCartItems();
-            if (count($cartItems) > 0) {
-                $cartItems = new CartResource(Cart::getProductsAndCartItems());
-                return  Inertia::render('User/CartList', ['cartItems' => $cartItems]);
-            } else {
-                return redirect()->back();
+        
+        if (count($cartItemsData) > 0) {
+            // Merge products with cart items data
+            $cartItems = [];
+            foreach ($products as $product) {
+                if (isset($cartItemsData[$product->id])) {
+                    $cartItems[] = [
+                        'id' => $cartItemsData[$product->id]['id'] ?? null,
+                        'user_id' => $cartItemsData[$product->id]['user_id'] ?? null,
+                        'product_id' => $product->id,
+                        'quantity' => $cartItemsData[$product->id]['quantity'],
+                        'price' => $cartItemsData[$product->id]['price'] ?? $product->price,
+                        'product' => $product
+                    ];
+                }
             }
+            
+            return Inertia::render(
+                'User/CartList',
+                [
+                    'cartItems' => $cartItems,
+                    'userAddress' => $userAddress
+                ]
+            );
+        } else {
+            return redirect()->route('home')->with('info', 'your cart is empty');
         }
     }
     public function store(Request $request, Product $product)
@@ -100,7 +112,7 @@ class CartController extends Controller
 
         return redirect()->back();
     }
-    public function delete(Request $request, Product $product)
+    public function destroy(Request $request, Product $product)
     {
         $user = $request->user();
         if ($user) {
