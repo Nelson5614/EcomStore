@@ -45,7 +45,7 @@
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <p class="text-sm font-medium text-gray-500">Price</p>
-                <p class="text-lg font-semibold text-gray-900">${{ formatCurrency(product.price) }}</p>
+                <p class="text-lg font-semibold text-gray-900">{{ formatCurrency(product.price) }}</p>
               </div>
               <div>
                 <p class="text-sm font-medium text-gray-500">Stock</p>
@@ -165,7 +165,11 @@ const minDate = computed(() => {
 });
 
 const formatCurrency = (amount) => {
-  return parseFloat(amount || 0).toFixed(2);
+  return new Intl.NumberFormat('en-LS', {
+    style: 'currency',
+    currency: 'LSL',
+    minimumFractionDigits: 0
+  }).format(amount || 0);
 };
 
 const submit = () => {

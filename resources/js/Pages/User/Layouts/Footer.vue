@@ -6,17 +6,21 @@
                     © {{ new Date().getFullYear() }} TlaliFurn. All rights reserved.
                 </p>
                 <div class="mt-4 flex justify-center space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                    <Link href="/privacy" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                         Privacy
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                    </Link>
+                    <Link href="/terms" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                         Terms
-                    </a>
-                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
+                    </Link>
+                    <Link href="/contact" class="text-gray-400 hover:text-white transition-colors duration-200 text-sm">
                         Contact
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>
     </footer>
 </template>
+
+<script setup>
+import { Link } from "@inertiajs/vue3";
+</script>

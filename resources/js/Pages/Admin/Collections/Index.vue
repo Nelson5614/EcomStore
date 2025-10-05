@@ -173,7 +173,7 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AdminLayout from "@/Pages/Components/AdminLAyout.vue";
 
@@ -191,7 +191,7 @@ const confirmDelete = (collection) => {
 
 const deleteCollection = () => {
   if (collectionToDelete.value) {
-    Link.delete(route('admin.collections.destroy', collectionToDelete.value.id));
+    router.delete(route('admin.collections.destroy', collectionToDelete.value.id));
     showDeleteModal.value = false;
     collectionToDelete.value = null;
   }

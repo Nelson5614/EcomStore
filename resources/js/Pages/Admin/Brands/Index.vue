@@ -158,7 +158,7 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AdminLayout from "@/Pages/Components/AdminLAyout.vue";
 
@@ -176,7 +176,7 @@ const confirmDelete = (brand) => {
 
 const deleteBrand = () => {
   if (brandToDelete.value) {
-    Link.delete(route('admin.brands.destroy', brandToDelete.value.id));
+    router.delete(route('admin.brands.destroy', brandToDelete.value.id));
     showDeleteModal.value = false;
     brandToDelete.value = null;
   }

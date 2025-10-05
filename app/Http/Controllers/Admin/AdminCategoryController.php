@@ -35,7 +35,7 @@ class AdminCategoryController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category created successfully.');
+        return redirect()->route('admin.categories.index')->with('success', 'Category created successfully.');
     }
 
     public function show(string $id)
@@ -69,7 +69,7 @@ class AdminCategoryController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('categories.index')->with('success', 'Category updated successfully.');
+        return redirect()->route('admin.categories.index')->with('success', 'Category updated successfully.');
     }
 
     public function destroy(string $id)
@@ -77,11 +77,11 @@ class AdminCategoryController extends Controller
         $category = Category::findOrFail($id);
         
         if ($category->products()->exists()) {
-            return redirect()->route('categories.index')->with('error', 'Cannot delete category. It has associated products.');
+            return redirect()->route('admin.categories.index')->with('error', 'Cannot delete category. It has associated products.');
         }
         
         $category->delete();
         
-        return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
+        return redirect()->route('admin.categories.index')->with('success', 'Category deleted successfully.');
     }
 }

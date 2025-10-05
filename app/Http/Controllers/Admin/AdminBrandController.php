@@ -35,7 +35,7 @@ class AdminBrandController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('brands.index')->with('success', 'Brand created successfully.');
+        return redirect()->route('admin.brands.index')->with('success', 'Brand created successfully.');
     }
 
     public function show(string $id)
@@ -69,7 +69,7 @@ class AdminBrandController extends Controller
             'description' => $request->description,
         ]);
 
-        return redirect()->route('brands.index')->with('success', 'Brand updated successfully.');
+        return redirect()->route('admin.brands.index')->with('success', 'Brand updated successfully.');
     }
 
     public function destroy(string $id)
@@ -77,11 +77,11 @@ class AdminBrandController extends Controller
         $brand = Brand::findOrFail($id);
         
         if ($brand->products()->exists()) {
-            return redirect()->route('brands.index')->with('error', 'Cannot delete brand. It has associated products.');
+            return redirect()->route('admin.brands.index')->with('error', 'Cannot delete brand. It has associated products.');
         }
         
         $brand->delete();
         
-        return redirect()->route('brands.index')->with('success', 'Brand deleted successfully.');
+        return redirect()->route('admin.brands.index')->with('success', 'Brand deleted successfully.');
     }
 }

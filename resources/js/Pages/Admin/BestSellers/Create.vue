@@ -167,7 +167,11 @@ const selectedProduct = computed(() => {
 });
 
 const formatCurrency = (amount) => {
-  return parseFloat(amount || 0).toFixed(2);
+  return new Intl.NumberFormat('en-LS', {
+    style: 'currency',
+    currency: 'LSL',
+    minimumFractionDigits: 0
+  }).format(amount || 0);
 };
 
 const submit = () => {

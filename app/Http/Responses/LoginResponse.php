@@ -14,6 +14,10 @@ class LoginResponse implements LoginResponseContract
      */
     public function toResponse($request)
     {
+        if (auth()->user()->is_admin) {
+            return redirect()->route('admin.index');
+        }
+
         // Check if we have a specific intended URL from checkout
         if ($request->session()->has('intended_url')) {
             $intendedUrl = $request->session()->get('intended_url');
@@ -44,7 +48,7 @@ class LoginResponse implements LoginResponseContract
             }
         }
 
-        // Default redirect to home
-        return redirect('/');
+        // Default redirect to home for regular users
+        return redirect()->intended(config('fortify.home'));
     }
 }

@@ -1,7 +1,7 @@
 <script setup>
 import UserLayout from "./Layouts/UserLayout.vue";
 import { Link, usePage } from "@inertiajs/vue3";
-import { defineProps } from "vue";
+import { defineProps, onMounted } from "vue";
 import {router} from "@inertiajs/vue3";
 import Swal from 'sweetalert2';
 
@@ -40,6 +40,35 @@ const formatPrice = (price) => {
         minimumFractionDigits: 0
     }).format(price);
 };
+
+// Smooth scrolling function
+const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+        });
+    }
+};
+
+// Handle anchor links with smooth scrolling
+const handleAnchorClick = (event) => {
+    const href = event.target.getAttribute('href');
+    if (href && href.startsWith('#')) {
+        event.preventDefault();
+        const sectionId = href.substring(1);
+        scrollToSection(sectionId);
+    }
+};
+
+// Initialize smooth scrolling when component is mounted
+onMounted(() => {
+    // Add click event listeners to all anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', handleAnchorClick);
+    });
+});
 </script>
 
 <template>
@@ -216,8 +245,161 @@ const formatPrice = (price) => {
             </div>
         </div>
 
+        <!-- About Us Section -->
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 py-16" id="about">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <div class="inline-flex items-center bg-amber-100 text-amber-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                        About Us
+                    </div>
+                    <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Story</h2>
+                    <p class="text-lg text-gray-600 max-w-3xl mx-auto">
+                        Crafting exceptional furniture experiences since 2024, TlaliFurn brings together passion, innovation, and quality to transform houses into homes.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left Side - Content -->
+                    <div class="space-y-6">
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-amber-100">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Our Mission</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        To provide high-quality, stylish furniture that enhances living spaces while maintaining affordability and sustainability. We believe everyone deserves a beautiful home.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-amber-100">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Quality Promise</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        Every piece of furniture is carefully crafted using premium materials and undergoes rigorous quality checks to ensure durability, comfort, and style.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-6 shadow-sm border border-amber-100">
+                            <div class="flex items-start space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+                                        <svg class="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-2">Customer Focus</h3>
+                                    <p class="text-gray-600 leading-relaxed">
+                                        Our customers are at the heart of everything we do. From personalized service to comprehensive warranties, we ensure your satisfaction every step of the way.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Side - Stats and Image -->
+                    <div class="space-y-8">
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="bg-white rounded-xl p-6 text-center shadow-sm border border-amber-100">
+                                <div class="text-3xl font-bold text-amber-600 mb-2">5+</div>
+                                <div class="text-sm text-gray-600">Happy Customers</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-6 text-center shadow-sm border border-amber-100">
+                                <div class="text-3xl font-bold text-amber-600 mb-2">2+</div>
+                                <div class="text-sm text-gray-600">Products Sold</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-6 text-center shadow-sm border border-amber-100">
+                                <div class="text-3xl font-bold text-amber-600 mb-2">5+</div>
+                                <div class="text-sm text-gray-600">Collections</div>
+                            </div>
+                            <div class="bg-white rounded-xl p-6 text-center shadow-sm border border-amber-100">
+                                <div class="text-3xl font-bold text-amber-600 mb-2">4.8</div>
+                                <div class="text-sm text-gray-600">Customer Rating</div>
+                            </div>
+                        </div>
+
+                        <!-- Image -->
+                        <div class="relative rounded-2xl overflow-hidden shadow-lg">
+                            <img src="/product_images/livingroom.jpg" alt="TlaliFurn Store" class="w-full h-64 object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                            <div class="absolute bottom-6 left-6 text-white">
+                                <div class="text-lg font-semibold mb-1">Visit Our Showroom</div>
+                                <div class="text-sm opacity-90">Experience quality firsthand</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Values Section -->
+                <div class="mt-16 text-center">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8">Our Core Values</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Quality</h4>
+                            <p class="text-sm text-gray-600">Uncompromising standards in every piece</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Innovation</h4>
+                            <p class="text-sm text-gray-600">Modern designs for contemporary living</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Passion</h4>
+                            <p class="text-sm text-gray-600">Love for furniture and customer satisfaction</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-semibold text-gray-900 mb-2">Value</h4>
+                            <p class="text-sm text-gray-600">Fair prices for exceptional quality</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Best Sellers Section -->
-        <div class="bg-white py-16">
+        <div class="bg-white py-16" id="bestsellers">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-12">
                     <div class="inline-flex items-center bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium mb-4">

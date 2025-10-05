@@ -45,7 +45,7 @@
             <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <p class="text-sm font-medium text-gray-500">Price</p>
-                <p class="text-lg font-semibold text-gray-900">${{ formatCurrency(product.price) }}</p>
+                <p class="text-lg font-semibold text-gray-900">{{ formatCurrency(product.price) }}</p>
               </div>
               <div>
                 <p class="text-sm font-medium text-gray-500">Stock</p>
@@ -89,7 +89,7 @@
             </div>
             <div>
               <p class="text-xs sm:text-sm font-medium text-gray-600">Total Revenue</p>
-              <p class="text-xl sm:text-2xl font-bold text-gray-900">${{ formatCurrency(statistics.totalRevenue) }}</p>
+              <p class="text-xl sm:text-2xl font-bold text-gray-900">{{ formatCurrency(statistics.totalRevenue) }}</p>
             </div>
           </div>
         </div>
@@ -143,10 +143,10 @@
                   {{ sale.quantity }}
                 </td>
                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  ${{ formatCurrency(sale.price) }}
+                  {{ formatCurrency(sale.price) }}
                 </td>
                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  ${{ formatCurrency(sale.price * sale.quantity) }}
+                  {{ formatCurrency(sale.price * sale.quantity) }}
                 </td>
                 <td class="px-4 sm:px-6 py-4 whitespace-nowrap">
                   <span :class="getStatusColor(sale.order?.status)" class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium capitalize">
@@ -195,7 +195,11 @@ const props = defineProps({
 });
 
 const formatCurrency = (amount) => {
-  return parseFloat(amount || 0).toFixed(2);
+  return new Intl.NumberFormat('en-LS', {
+    style: 'currency',
+    currency: 'LSL',
+    minimumFractionDigits: 0
+  }).format(amount || 0);
 };
 
 const formatDate = (date) => {

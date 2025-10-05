@@ -8,6 +8,14 @@ defineProps({
         required: true
     }
 });
+
+const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-LS', {
+        style: 'currency',
+        currency: 'LSL',
+        minimumFractionDigits: 0
+    }).format(price);
+};
 </script>
 
 <template>
@@ -79,8 +87,8 @@ defineProps({
                                         <p class="text-sm text-gray-600">Quantity: {{ item.quantity }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-medium text-gray-900">${{ (parseFloat(item.unit_price) * item.quantity).toFixed(2) }}</p>
-                                        <p class="text-sm text-gray-600">${{ parseFloat(item.unit_price).toFixed(2) }} each</p>
+                                        <p class="text-sm font-medium text-gray-900">{{ formatPrice(parseFloat(item.unit_price) * item.quantity) }}</p>
+                                        <p class="text-sm text-gray-600">{{ formatPrice(parseFloat(item.unit_price)) }} each</p>
                                     </div>
                                 </div>
                             </div>
@@ -110,20 +118,20 @@ defineProps({
                             <div class="space-y-3">
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Subtotal</span>
-                                    <span class="text-gray-900">${{ order.orderItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0).toFixed(2) }}</span>
+                                    <span class="text-gray-900">{{ formatPrice(order.orderItems.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0)) }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Shipping</span>
-                                    <span class="text-gray-900">$0.00</span>
+                                    <span class="text-gray-900">{{ formatPrice(0) }}</span>
                                 </div>
                                 <div class="flex justify-between text-sm">
                                     <span class="text-gray-600">Tax</span>
-                                    <span class="text-gray-900">$0.00</span>
+                                    <span class="text-gray-900">{{ formatPrice(0) }}</span>
                                 </div>
                                 <div class="border-t border-gray-200 pt-3">
                                     <div class="flex justify-between">
                                         <span class="text-base font-medium text-gray-900">Total</span>
-                                        <span class="text-base font-bold text-gray-900">${{ parseFloat(order.total_amount).toFixed(2) }}</span>
+                                        <span class="text-base font-bold text-gray-900">{{ formatPrice(parseFloat(order.total_amount)) }}</span>
                                     </div>
                                 </div>
                             </div>

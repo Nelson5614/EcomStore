@@ -171,7 +171,7 @@
 </template>
 
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@/Pages/Components/AdminLAyout.vue';
 import { Link } from '@inertiajs/vue3';
 import { ref } from 'vue';
 

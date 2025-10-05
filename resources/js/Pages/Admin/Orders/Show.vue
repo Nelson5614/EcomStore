@@ -47,7 +47,7 @@
                     </div>
                     <div>
                       <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Amount</dt>
-                      <dd class="text-sm text-gray-900 dark:text-white">${{ parseFloat(order.total).toFixed(2) }}</dd>
+                      <dd class="text-sm text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(order.total)) }}</dd>
                     </div>
                     <div>
                       <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Session ID</dt>
@@ -160,10 +160,10 @@
                         <div class="text-sm text-gray-900 dark:text-white">{{ item.quantity }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900 dark:text-white">${{ parseFloat(item.price).toFixed(2) }}</div>
+                        <div class="text-sm text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.price)) }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">${{ (parseFloat(item.price) * item.quantity).toFixed(2) }}</div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.price) * item.quantity) }}</div>
                       </td>
                     </tr>
                   </tbody>
@@ -191,6 +191,14 @@ import { Link, router } from '@inertiajs/vue3';
 defineProps({
   order: Object
 });
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('en-LS', {
+    style: 'currency',
+    currency: 'LSL',
+    minimumFractionDigits: 0
+  }).format(amount || 0);
+};
 
 const getStatusClass = (status) => {
   const classes = {

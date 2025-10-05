@@ -107,7 +107,7 @@
                 <!-- Price -->
                 <div>
                   <label class="block text-sm font-medium text-gray-700">Price</label>
-                  <p class="mt-1 text-2xl font-bold text-green-600">${{ parseFloat(product.price).toFixed(2) }}</p>
+                  <p class="mt-1 text-2xl font-bold text-green-600">{{ formatCurrency(parseFloat(product.price)) }}</p>
                 </div>
 
                 <!-- Quantity -->
@@ -189,6 +189,14 @@ import AdminLayout from "@/Pages/Components/AdminLAyout.vue";
 const props = defineProps({
   product: Object
 });
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('en-LS', {
+    style: 'currency',
+    currency: 'LSL',
+    minimumFractionDigits: 0
+  }).format(amount || 0);
+};
 
 const mainImageIndex = ref(0);
 

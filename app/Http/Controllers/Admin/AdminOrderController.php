@@ -14,9 +14,20 @@ class AdminOrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::with(['createdBy', 'userAddress.user', 'items.product'])
+        $orders = Order::with(['user', 'userAddress.user', 'items.product', 'payment'])
             ->latest()
             ->paginate(10);
+        
+        // Debug: Log the first order's payment data
+        if ($orders->count() > 0) {
+            $firstOrder = $orders->first();
+            \Log::info('Admin Order Debug', [
+                'order_id' => $firstOrder->id,
+                'has_payment' => $firstOrder->payment ? 'Yes' : 'No',
+                'payment_data' => $firstOrder->payment ? $firstOrder->payment->toArray() : null,
+                'phone_number' => $firstOrder->payment ? $firstOrder->payment->phone_number : 'N/A'
+            ]);
+        }
         
         return Inertia::render('Admin/Orders/Index', [
             'orders' => $orders

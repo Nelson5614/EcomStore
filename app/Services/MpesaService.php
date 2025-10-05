@@ -109,6 +109,38 @@ class MpesaService
         }
 
         try {
+            // Validate required parameters
+            $requiredParams = ['amount', 'phone_number', 'transaction_id', 'reference', 'description'];
+            foreach ($requiredParams as $param) {
+                if (empty($paymentData[$param])) {
+                    Log::error('M-Pesa C2B payment missing required parameter', [
+                        'parameter' => $param,
+                        'payment_data' => $paymentData
+                    ]);
+                    return ['success' => false, 'error' => "Missing required parameter: {$param}"];
+                }
+            }
+
+            // Validate amount
+            $amount = floatval($paymentData['amount']);
+            if ($amount <= 0) {
+                return ['success' => false, 'error' => 'Amount must be greater than 0'];
+            }
+
+            $minAmount = floatval($this->config['min_amount'] ?? 1);
+            $maxAmount = floatval($this->config['max_amount'] ?? 50000);
+            if ($amount < $minAmount || $amount > $maxAmount) {
+                return ['success' => false, 'error' => "Amount must be between {$minAmount} and {$maxAmount}"];
+            }
+
+            // Validate service provider code
+            if (empty($this->serviceProviderCode) || $this->serviceProviderCode === '000000') {
+                Log::error('M-Pesa C2B payment invalid service provider code', [
+                    'service_provider_code' => $this->serviceProviderCode
+                ]);
+                return ['success' => false, 'error' => 'Invalid service provider code configuration'];
+            }
+
             $context = new APIContext();
             $context->set_api_key($sessionId);
             $context->set_public_key($this->publicKey);
@@ -119,22 +151,40 @@ class MpesaService
             $context->set_path($this->c2bPaymentPath);
             $context->add_header('Origin', '*');
 
-            $amountStr = number_format($paymentData['amount'], 2, '.', '');
+            // Format amount properly
+            $amountStr = number_format($amount, 2, '.', '');
 
+            // Format customer MSISDN
             $customerMsisdn = ($this->environment === 'sandbox') 
                 ? '000000000001' 
-                : $paymentData['phone_number'];
+                : $this->validatePhoneNumber($paymentData['phone_number']);
 
-            Log::info('Using Customer MSISDN for C2B Payment', ['msisdn' => $customerMsisdn, 'environment' => $this->environment]);
+            if (!$customerMsisdn) {
+                return ['success' => false, 'error' => 'Invalid phone number format'];
+            }
 
-            $context->add_parameter('input_Amount', $amountStr);
-            $context->add_parameter('input_Country', $this->country);
-            $context->add_parameter('input_Currency', $this->currency);
-            $context->add_parameter('input_CustomerMSISDN', $customerMsisdn);
-            $context->add_parameter('input_ServiceProviderCode', $this->serviceProviderCode);
-            $context->add_parameter('input_ThirdPartyConversationID', $paymentData['transaction_id']);
-            $context->add_parameter('input_TransactionReference', $paymentData['reference']);
-            $context->add_parameter('input_PurchasedItemsDesc', $paymentData['description']);
+            // Log all parameters being sent
+            $apiParams = [
+                'input_Amount' => $amountStr,
+                'input_Country' => $this->country,
+                'input_Currency' => $this->currency,
+                'input_CustomerMSISDN' => $customerMsisdn,
+                'input_ServiceProviderCode' => $this->serviceProviderCode,
+                'input_ThirdPartyConversationID' => $paymentData['transaction_id'],
+                'input_TransactionReference' => $paymentData['reference'],
+                'input_PurchasedItemsDesc' => $paymentData['description']
+            ];
+
+            Log::info('Mpesa C2B Payment Request Parameters', [
+                'parameters' => $apiParams,
+                'environment' => $this->environment,
+                'endpoint' => $this->baseUrl . $this->c2bPaymentPath
+            ]);
+
+            // Add parameters to context
+            foreach ($apiParams as $key => $value) {
+                $context->add_parameter($key, $value);
+            }
 
             $request = new APIRequest($context);
             $response = $request->execute();
@@ -147,10 +197,25 @@ class MpesaService
 
             Log::info('Mpesa C2B Payment Response Body', ['response' => $decoded]);
 
+            // Check for API-level errors
+            if (isset($decoded->output_ResponseCode) && $decoded->output_ResponseCode !== 'INS-0') {
+                $errorMsg = $decoded->output_ResponseDesc ?? 'Unknown API error';
+                Log::error('M-Pesa C2B payment API error', [
+                    'response_code' => $decoded->output_ResponseCode,
+                    'response_desc' => $errorMsg,
+                    'conversation_id' => $decoded->output_ConversationID ?? null
+                ]);
+                return ['success' => false, 'error' => $errorMsg, 'response_code' => $decoded->output_ResponseCode];
+            }
+
             return ['success' => true, 'data' => $decoded];
 
         } catch (Exception $e) {
-            Log::error('M-Pesa C2B payment failed', ['error' => $e->getMessage(), 'data' => $paymentData]);
+            Log::error('M-Pesa C2B payment failed', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'data' => $paymentData
+            ]);
             return ['success' => false, 'error' => $e->getMessage()];
         }
     }

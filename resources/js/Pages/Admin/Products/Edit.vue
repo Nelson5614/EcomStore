@@ -290,7 +290,7 @@
 </template>
 
 <script setup>
-import { Link, useForm } from '@inertiajs/vue3';
+import { Link, useForm, router } from '@inertiajs/vue3';
 import { ref } from 'vue';
 import AdminLayout from "@/Pages/Components/AdminLAyout.vue";
 
@@ -339,7 +339,7 @@ const removeNewImage = (index) => {
 
 const deleteExistingImage = (imageId) => {
   if (confirm('Are you sure you want to delete this image?')) {
-    Link.delete(route('admin.products.deleteimage', imageId), {
+    router.delete(route('admin.products.deleteimage', imageId), {
       preserveScroll: true,
       onSuccess: () => {
         // Reload the page to update the product images

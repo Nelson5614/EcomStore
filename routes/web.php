@@ -26,6 +26,19 @@ Route::get('/products/{id}', [UserController::class, 'show'])->name('products.sh
 Route::get('/categories/{slug}', [UserController::class, 'category'])->name('categories.show');
 Route::get('/collections/{slug}', [UserController::class, 'collection'])->name('collections.show');
 
+// Static pages
+Route::get('/privacy', function () {
+    return Inertia::render('User/Privacy');
+})->name('privacy');
+
+Route::get('/terms', function () {
+    return Inertia::render('User/Terms');
+})->name('terms');
+
+Route::get('/contact', function () {
+    return Inertia::render('User/Contact');
+})->name('contact');
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),

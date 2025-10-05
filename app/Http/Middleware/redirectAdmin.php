@@ -16,11 +16,11 @@ class redirectAdmin
      */
     public function handle(Request $request, Closure $next, $guard = null): Response
     {
-       if(Auth::guard($guard)){
-        if(Auth::user()->is_admin){
-            return redirect()->route('admin.index');
+        if (Auth::guard($guard)->check()) {
+            if (Auth::user()->is_admin) {
+                return redirect()->route('admin.index');
+            }
         }
-       }
         return $next($request);
     }
 }

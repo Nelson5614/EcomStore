@@ -47,7 +47,7 @@
                 Total Amount *
               </label>
               <div class="relative">
-                <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">$</span>
+                <span class="absolute left-3 top-2 text-gray-500 dark:text-gray-400">LSL</span>
                 <input
                   type="number"
                   id="total"
@@ -131,10 +131,10 @@
                         <div class="text-sm text-gray-900 dark:text-white">{{ item.quantity }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900 dark:text-white">${{ parseFloat(item.price).toFixed(2) }}</div>
+                        <div class="text-sm text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.price)) }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">${{ (parseFloat(item.price) * item.quantity).toFixed(2) }}</div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.price) * item.quantity) }}</div>
                       </td>
                     </tr>
                   </tbody>
@@ -191,6 +191,14 @@ defineProps({
   order: Object,
   errors: Object
 });
+
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('en-LS', {
+    style: 'currency',
+    currency: 'LSL',
+    minimumFractionDigits: 0
+  }).format(amount || 0);
+};
 
 const form = useForm({
   user_address_id: props.order.user_address_id,

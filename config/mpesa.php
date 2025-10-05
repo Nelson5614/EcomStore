@@ -11,7 +11,7 @@ return [
     'c2b_payment_path' => env('MPESA_C2B_PAYMENT_PATH', '/sandbox/ipg/v2/vodacomLES/c2bPayment/singleStage/'),
     
     // Service Provider Configuration
-    'service_provider_code' => env('MPESA_SERVICE_PROVIDER_CODE', '000000'),
+    'service_provider_code' => env('MPESA_SERVICE_PROVIDER_CODE', '171717'),
     'country' => env('MPESA_COUNTRY', 'LES'),
     'currency' => env('MPESA_CURRENCY', 'LSL'),
     

@@ -123,7 +123,7 @@
 </template>
 
 <script setup>
-import AdminLayout from '@/Layouts/AdminLayout.vue';
+import AdminLayout from '@/Pages/Components/AdminLAyout.vue';
 import { Link, useForm } from '@inertiajs/vue3';
 
 const props = defineProps({
