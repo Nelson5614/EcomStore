@@ -79,6 +79,7 @@ Route::prefix('payments')->controller(PaymentController::class)->group(function 
     Route::get('methods', 'getPaymentMethods')->name('payments.methods');
     Route::get('status/{transactionId}', 'checkPaymentStatus')->name('payments.status');
     Route::post('mpesa/initiate', 'initiateMpesaPayment')->name('payments.mpesa.initiate')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']);
+    Route::post('initiate', 'initiatePayment')->name('payments.initiate')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']);
 });
 
 //user address routes

@@ -1,6 +1,6 @@
 <script setup>
 import { Link, useForm, usePage } from '@inertiajs/vue3';
-import { computed, ref } from 'vue';
+import { computed, ref, reactive } from 'vue';
 
 const props = defineProps({
     cartItems: Array,
@@ -65,27 +65,112 @@ const submitOrder = () => {
         alert('Please enter your M-Pesa phone number');
         return;
     }
+    // Open confirmation modal instead of full navigation
+    openPaymentModal();
+};
 
-    console.log('Submitting form to:', route('checkout.process'));
-    
-    form.post(route('checkout.process'), {
-        onSuccess: (response) => {
-            console.log('Order processed successfully:', response);
-            // The redirect will be handled by the server
+// ----- Payment Modal State & Actions -----
+const showPaymentModal = ref(false);
+const modal = reactive({
+    loading: false,
+    step: 'confirm', // confirm | result
+    message: '',
+    code: null,
+    mpesa: null,
+    error: null,
+});
+const editedPhone = ref('');
+
+const mpesaLogoUrl = '/images/mpesa.png';
+
+const csrfToken = () => {
+    const el = document.querySelector('meta[name="csrf-token"]');
+    return el ? el.getAttribute('content') : '';
+};
+
+const openPaymentModal = () => {
+    editedPhone.value = form.phone_number || '';
+    modal.loading = false;
+    modal.step = 'confirm';
+    modal.message = '';
+    modal.code = null;
+    modal.mpesa = null;
+    modal.error = null;
+    showPaymentModal.value = true;
+};
+
+const closePaymentModal = () => {
+    showPaymentModal.value = false;
+};
+
+const createOrderAjax = async () => {
+    const res = await fetch(route('checkout.process'), {
+        method: 'POST',
+        credentials: 'same-origin', // include session cookies
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken(), // correct header name
+            'X-Requested-With': 'XMLHttpRequest',
         },
-        onError: (errors) => {
-            console.error('Order processing errors:', errors);
-            // Show specific error messages
-            let errorMessage = 'There was an error processing your order.\n\n';
-            for (const [key, value] of Object.entries(errors)) {
-                errorMessage += `${key}: ${value}\n`;
-            }
-            alert(errorMessage);
-        },
-        onFinish: () => {
-            console.log('Form submission finished');
-        }
+        body: JSON.stringify(form.data()),
     });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok || !data.success) {
+        throw { message: data.message || 'Failed to create order', errors: data.errors || null };
+    }
+    return data; // { success, order_id, payment_id, amount }
+};
+
+const initiatePaymentAjax = async (paymentId) => {
+    const res = await fetch(route('payments.initiate'), {
+        method: 'POST',
+        credentials: 'same-origin', // include session cookies
+        headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'X-CSRF-TOKEN': csrfToken(), // correct header name
+            'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: JSON.stringify({ payment_id: paymentId, phone_number: editedPhone.value }),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) {
+        throw { message: data.message || 'Failed to initiate payment', code: data.response_code || null, error: data.error || null };
+    }
+    return data; // includes response_code/desc and mpesa
+};
+
+const confirmMpesaInModal = async () => {
+    try {
+        modal.loading = true;
+        modal.step = 'confirm';
+        modal.message = 'Preparing payment...';
+        // 1) Create order & payment via JSON
+        const orderResp = await createOrderAjax();
+        modal.message = 'Please check your phone and enter your PIN...';
+        // 2) Initiate payment via JSON
+        const payResp = await initiatePaymentAjax(orderResp.payment_id);
+        modal.loading = false;
+        modal.step = 'result';
+        modal.code = payResp.response_code || (payResp.mpesa && payResp.mpesa.output_ResponseCode) || null;
+        modal.message = payResp.response_desc || (payResp.mpesa && payResp.mpesa.output_ResponseDesc) || 'Payment initiated.';
+        modal.mpesa = payResp.mpesa || null;
+
+        // Auto-close on INS-0 (success)
+        if (modal.code === 'INS-0') {
+            // Briefly show success then close
+            setTimeout(() => {
+                closePaymentModal();
+            }, 1500);
+        }
+    } catch (e) {
+        modal.loading = false;
+        modal.step = 'result';
+        modal.code = e.code || null;
+        modal.error = e.error || null;
+        modal.message = e.message || 'Something went wrong';
+    }
 };
 </script>
 
@@ -308,6 +393,59 @@ const submitOrder = () => {
                     </div>
                 </div>
             </div>
+        
+        <!-- Payment Confirmation Modal (moved inside the main template to keep a single <template>) -->
+        <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div class="bg-white w-full max-w-lg rounded-xl shadow-xl overflow-hidden">
+                <!-- Header -->
+                <div class="flex items-center gap-5 px-6 py-4 border-b">
+                    <!-- Larger logo without tight circular container -->
+                    <img v-if="mpesaLogoUrl" :src="mpesaLogoUrl" alt="M-Pesa" class="h-16 md:h-24 w-auto object-contain" @error="$event.target.style.display='none'"/>
+                    <span class="text-emerald-700 font-bold text-3xl" v-else>M‑Pesa</span>
+                    <h3 class="text-xl md:text-2xl font-semibold text-gray-900">Confirm M-Pesa Payment</h3>
+                    <button class="ml-auto text-gray-500 hover:text-gray-700" @click="closePaymentModal">✕</button>
+                </div>
+
+                <!-- Body -->
+                <div class="px-6 py-5 space-y-4">
+                    <!-- Phone input (editable) -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">M-Pesa Phone Number</label>
+                        <input v-model="editedPhone" type="tel" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500" placeholder="Enter your M-Pesa number"/>
+                        <p class="text-xs text-gray-500 mt-1">You'll receive a prompt on this number to enter your M-Pesa PIN.</p>
+                    </div>
+
+                    <!-- Status/result -->
+                    <div v-if="modal.step === 'confirm'">
+                        <div v-if="modal.loading" class="flex items-center gap-2 text-amber-700">
+                            <svg class="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                            </svg>
+                            <span>{{ modal.message || 'Preparing payment...' }}</span>
+                        </div>
+                        <div v-else class="text-sm text-gray-700">
+                            Confirm your phone number and press "Confirm & Pay". Check your phone for the M-Pesa prompt and enter your PIN.
+                        </div>
+                    </div>
+
+                    <div v-else-if="modal.step === 'result'">
+                        <div :class="['px-3 py-2 rounded-md text-sm', modal.code === 'INS-0' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200']">
+                            <div class="font-medium">{{ modal.code ? `Response: ${modal.code}` : 'Response' }}</div>
+                            <div class="mt-1">{{ modal.message }}</div>
+                        </div>
+                        <div v-if="modal.error" class="mt-2 text-xs text-red-600">{{ modal.error }}</div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="px-6 py-4 bg-gray-50 border-t flex items-center gap-3 justify-end">
+                    <button class="px-4 py-2 rounded-md border text-gray-700 hover:bg-gray-100" @click="closePaymentModal">Close</button>
+                    <button v-if="modal.step === 'confirm' && !modal.loading" class="px-4 py-2 rounded-md bg-amber-600 hover:bg-amber-700 text-white" @click="confirmMpesaInModal">Confirm & Pay</button>
+                    <button v-if="modal.loading" disabled class="px-4 py-2 rounded-md bg-gray-400 text-white">Processing...</button>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </template>

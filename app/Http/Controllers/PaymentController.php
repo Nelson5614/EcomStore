@@ -76,8 +76,8 @@ class PaymentController extends Controller
                 'amount' => $request->amount,
                 'phone_number' => $phoneNumber,
                 'transaction_id' => $transactionId,
-                'reference' => 'ORDER-' . $order->id,
-                'description' => 'Payment for Order #' . $order->id,
+                'reference' => 'ORDER' . $order->id,
+                'description' => 'order' . $order->id,
             ];
 
             $result = $this->mpesaService->processC2BPayment($paymentData);
@@ -259,6 +259,7 @@ class PaymentController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'payment_id' => 'required|exists:payments,id',
+                'phone_number' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -270,6 +271,20 @@ class PaymentController extends Controller
 
             $payment = Payment::findOrFail($request->payment_id);
             $order = $payment->order;
+
+            // If a phone number override is provided, validate and persist it
+            if ($request->filled('phone_number')) {
+                $validatedPhone = $this->mpesaService->validatePhoneNumber($request->phone_number);
+                if (!$validatedPhone) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Invalid phone number format for M-Pesa.',
+                        'errors' => ['phone_number' => ['Invalid phone number format']],
+                    ], 422);
+                }
+                $payment->phone_number = $validatedPhone;
+                $payment->save();
+            }
 
             // Check if payment is still pending
             if ($payment->status !== 'pending') {
@@ -284,8 +299,8 @@ class PaymentController extends Controller
                 'amount' => $payment->amount,
                 'phone_number' => $payment->phone_number,
                 'transaction_id' => $payment->transaction_id,
-                'reference' => 'ORDER-' . $order->id,
-                'description' => 'Payment for Order #' . $order->id,
+                'reference' => 'ORDER' . $order->id,
+                'description' => 'order' . $order->id,
             ];
 
             $result = $this->mpesaService->processC2BPayment($paymentData);
@@ -296,11 +311,19 @@ class PaymentController extends Controller
                 $payment->response_data = $result['data'];
                 $payment->save();
 
+                // Extract Mpesa response details when available
+                $mpesa = $result['data'] ?? null;
+                $code = is_object($mpesa) && isset($mpesa->output_ResponseCode) ? $mpesa->output_ResponseCode : null;
+                $desc = is_object($mpesa) && isset($mpesa->output_ResponseDesc) ? $mpesa->output_ResponseDesc : null;
+
                 return response()->json([
                     'success' => true,
                     'message' => 'Payment initiated successfully. Please check your phone for M-Pesa prompt.',
                     'transaction_id' => $payment->transaction_id,
-                    'payment_id' => $payment->id
+                    'payment_id' => $payment->id,
+                    'mpesa' => $mpesa,
+                    'response_code' => $code,
+                    'response_desc' => $desc,
                 ]);
             } else {
                 // Update payment status to failed
@@ -311,7 +334,9 @@ class PaymentController extends Controller
                 return response()->json([
                     'success' => false,
                     'message' => 'Payment initiation failed: ' . $result['error'],
-                    'transaction_id' => $payment->transaction_id
+                    'transaction_id' => $payment->transaction_id,
+                    'response_code' => $result['response_code'] ?? null,
+                    'error' => $result['error'] ?? null,
                 ], 500);
             }
 

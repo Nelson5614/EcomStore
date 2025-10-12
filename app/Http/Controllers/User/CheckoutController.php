@@ -169,7 +169,17 @@ class CheckoutController extends Controller
             DB::commit();
             \Log::info('Database transaction committed');
 
-            // Redirect to payment processing page
+            // If the client expects JSON (AJAX/modal flow), return order/payment data
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'order_id' => $order->id,
+                    'payment_id' => $payment->id,
+                    'amount' => $totalAmount,
+                ]);
+            }
+
+            // Redirect fallback (non-AJAX flow)
             \Log::info('Redirecting to payment page', ['order_id' => $order->id]);
             return redirect()->route('checkout.payment', ['order' => $order->id]);
 

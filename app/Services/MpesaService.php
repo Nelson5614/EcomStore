@@ -133,12 +133,10 @@ class MpesaService
                 return ['success' => false, 'error' => "Amount must be between {$minAmount} and {$maxAmount}"];
             }
 
-            // Validate service provider code
-            if (empty($this->serviceProviderCode) || $this->serviceProviderCode === '000000') {
-                Log::error('M-Pesa C2B payment invalid service provider code', [
-                    'service_provider_code' => $this->serviceProviderCode
-                ]);
-                return ['success' => false, 'error' => 'Invalid service provider code configuration'];
+            // Validate service provider code (allow '000000' per user configuration)
+            if (empty($this->serviceProviderCode)) {
+                Log::error('M-Pesa C2B payment missing service provider code');
+                return ['success' => false, 'error' => 'Missing service provider code'];
             }
 
             $context = new APIContext();
@@ -151,13 +149,11 @@ class MpesaService
             $context->set_path($this->c2bPaymentPath);
             $context->add_header('Origin', '*');
 
-            // Format amount properly
-            $amountStr = number_format($amount, 2, '.', '');
+            // Format amount properly (remove decimals for Lesotho API)
+            $amountStr = (string)intval($amount);
 
-            // Format customer MSISDN
-            $customerMsisdn = ($this->environment === 'sandbox') 
-                ? '000000000001' 
-                : $this->validatePhoneNumber($paymentData['phone_number']);
+            // Format customer MSISDN (always use user-entered phone; do not override in sandbox)
+            $customerMsisdn = $this->validatePhoneNumber($paymentData['phone_number']);
 
             if (!$customerMsisdn) {
                 return ['success' => false, 'error' => 'Invalid phone number format'];
@@ -224,6 +220,12 @@ class MpesaService
     {
         $phoneNumber = preg_replace('/[^0-9+]/', '', $phoneNumber);
 
+        // In sandbox, allow any numeric MSISDN (e.g., 0000000001, 00000000001)
+        if (($this->environment ?? 'sandbox') === 'sandbox') {
+            $clean = ltrim($phoneNumber, '+');
+            return preg_match('/^\d{1,15}$/', $clean) ? $clean : null;
+        }
+
         if (preg_match('/^(?:\+266|266)(5|6)\d{7}$/', $phoneNumber)) {
             $phoneNumber = ltrim($phoneNumber, '+');
             if (!str_starts_with($phoneNumber, '266')) {
@@ -237,7 +239,8 @@ class MpesaService
 
     public function generateTransactionId(): string
     {
-        return 'MP' . now()->format('YmdHis') . Str::upper(Str::random(4));
+        // 32-character lowercase alphanumeric to resemble sample packet (e.g., asv02e5958774f7ba228d83d0d689761)
+        return strtolower(Str::random(32));
     }
 
     public function processCallback(array $callbackData): array
