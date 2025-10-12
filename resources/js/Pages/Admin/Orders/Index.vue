@@ -68,6 +68,9 @@
                   Phone
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  Delivery
+                </th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                   Status
                 </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
@@ -96,11 +99,16 @@
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
+                  <div class="text-sm text-gray-900 dark:text-white">
+                    {{ (order.delivery_method || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || '—' }}
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
                   <select
                     @change="updateStatus(order.id, $event.target.value)"
-                    :value="order.status"
+                    :value="normalizeStatus(order.status)"
                     class="text-sm rounded-full px-2 py-1 border-0 focus:ring-2 focus:ring-blue-500"
-                    :class="getStatusClass(order.status)"
+                    :class="getStatusClass(normalizeStatus(order.status))"
                   >
                     <option value="pending" class="bg-yellow-100 text-yellow-800">Pending</option>
                     <option value="processing" class="bg-blue-100 text-blue-800">Processing</option>
@@ -212,6 +220,12 @@ const getStatusClass = (status) => {
     cancelled: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
   };
   return classes[status] || 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+};
+
+// Normalize legacy statuses from older records
+const normalizeStatus = (status) => {
+  if (!status) return 'pending';
+  return status === 'pending_payment' ? 'pending' : status;
 };
 
 const updateStatus = (orderId, newStatus) => {

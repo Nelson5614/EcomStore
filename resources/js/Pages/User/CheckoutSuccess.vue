@@ -71,6 +71,31 @@ const formatDate = (date) => {
                                     <p class="text-sm text-gray-600">Phone: {{ order.userAddress.phone }}</p>
                                 </div>
                             </div>
+
+                            <!-- Delivery Method -->
+                            <div>
+                                <h3 class="text-sm font-medium text-gray-900 mb-3">Delivery Method</h3>
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <p class="text-sm text-gray-900">
+                                        {{ (order.delivery_method || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || '—' }}
+                                    </p>
+                                    <template v-if="order.delivery_method === 'own_uber'">
+                                        <p class="text-xs text-gray-600 mt-1">
+                                            Please arrange your own courier/ride to collect your order from our store.
+                                        </p>
+                                    </template>
+                                    <template v-else-if="order.delivery_method === 'local_delivery'">
+                                        <p class="text-xs text-gray-600 mt-1">
+                                            We'll contact you shortly to schedule a local delivery time to your address.
+                                        </p>
+                                    </template>
+                                    <template v-else>
+                                        <p class="text-xs text-gray-600 mt-1">
+                                            You can collect your order in-store at your convenience.
+                                        </p>
+                                    </template>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Order Items -->

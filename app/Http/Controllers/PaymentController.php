@@ -88,6 +88,26 @@ class PaymentController extends Controller
                 $payment->response_data = $result['data'];
                 $payment->save();
 
+                // Also mark the order as processing so it's visible in admin/user immediately
+                $order->status = 'processing';
+                $order->save();
+                Log::info('Order status set to processing on initiateMpesaPayment', ['order_id' => $order->id]);
+
+                // If INS-0 was returned immediately, treat as success
+                $decoded = $result['data'] ?? null;
+                $code = is_object($decoded) && isset($decoded->output_ResponseCode) ? $decoded->output_ResponseCode : null;
+                if ($code === 'INS-0') {
+                    $payment->status = 'success';
+                    $payment->processed_at = now();
+                    $payment->save();
+
+                    if (!$order->paid_at) {
+                        $order->paid_at = now();
+                        $order->save();
+                    }
+                    Log::info('Immediate INS-0: marked payment success and paid_at set', ['order_id' => $order->id, 'payment_id' => $payment->id]);
+                }
+
                 return redirect()->back()->with('success', 'Payment initiated successfully. Please check your phone for M-Pesa prompt.');
             } else {
                 // Update payment status to failed
@@ -152,14 +172,21 @@ class PaymentController extends Controller
             // Update order status if payment is successful
             if ($processedData['status'] === 'success') {
                 $order = $payment->order;
-                $order->status = 'paid';
-                $order->paid_at = now();
-                $order->save();
+                // Set to 'processing' after successful payment; admin can move to 'completed' when fulfilled
+                $order->status = 'processing';
+                Log::info('Order status set to processing on callback success', ['order_id' => $order->id]);
+                // Only set paid_at and decrease stock if not already paid
+                if (!$order->paid_at) {
+                    $order->paid_at = now();
+                    $order->save();
 
-                // Decrease product stock
-                foreach ($order->items as $item) {
-                    $product = $item->product;
-                    $product->decrement('quantity', $item->quantity);
+                    // Decrease product stock
+                    foreach ($order->items as $item) {
+                        $product = $item->product;
+                        $product->decrement('quantity', $item->quantity);
+                    }
+                } else {
+                    $order->save();
                 }
 
                 Log::info('Order marked as paid', [
@@ -311,10 +338,26 @@ class PaymentController extends Controller
                 $payment->response_data = $result['data'];
                 $payment->save();
 
+                // Also mark the order as processing so it's visible in admin/user immediately
+                $order->status = 'processing';
+                $order->save();
+
                 // Extract Mpesa response details when available
                 $mpesa = $result['data'] ?? null;
                 $code = is_object($mpesa) && isset($mpesa->output_ResponseCode) ? $mpesa->output_ResponseCode : null;
                 $desc = is_object($mpesa) && isset($mpesa->output_ResponseDesc) ? $mpesa->output_ResponseDesc : null;
+
+                // If INS-0 was returned immediately, treat as success
+                if ($code === 'INS-0') {
+                    $payment->status = 'success';
+                    $payment->processed_at = now();
+                    $payment->save();
+
+                    if (!$order->paid_at) {
+                        $order->paid_at = now();
+                        $order->save();
+                    }
+                }
 
                 return response()->json([
                     'success' => true,

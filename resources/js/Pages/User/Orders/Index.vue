@@ -1,5 +1,6 @@
 <script setup>
-import { Link } from "@inertiajs/vue3";
+import { Link, usePage } from "@inertiajs/vue3";
+import { computed } from "vue";
 import UserLayout from "../Layouts/UserLayout.vue";
 
 defineProps({
@@ -8,6 +9,21 @@ defineProps({
         required: true
     }
 });
+
+const page = usePage();
+const flash = computed(() => page.props.flash || {});
+
+// Determine the status to display on the card
+// - Completed/Cancelled always win
+// - Pending can be promoted to Processing if payment shows progress/success
+// - Normalize legacy 'pending_payment' to 'pending'
+const effectiveStatus = (order) => {
+    const base = (order?.status === 'pending_payment') ? 'pending' : (order?.status || 'pending');
+    if (base === 'completed' || base === 'cancelled') return base;
+    const pay = order?.payment?.status || '';
+    if (base === 'pending' && (pay === 'processing' || pay === 'success')) return 'processing';
+    return base; // 'pending' or 'processing'
+};
 </script>
 
 <template>
@@ -18,6 +34,11 @@ defineProps({
                 <div class="mb-8">
                     <h1 class="text-3xl font-bold text-gray-900">My Orders</h1>
                     <p class="mt-2 text-gray-600">View and track your order history</p>
+                </div>
+
+                <!-- Flash Success Message -->
+                <div v-if="flash.success" class="mb-6 rounded-md border border-green-200 bg-green-50 p-4 text-green-800">
+                    {{ flash.success }}
                 </div>
 
                 <!-- Orders List -->
@@ -33,12 +54,12 @@ defineProps({
                                 <div class="text-right">
                                     <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"
                                           :class="{
-                                              'bg-yellow-100 text-yellow-800': order.status === 'pending_payment',
-                                              'bg-blue-100 text-blue-800': order.status === 'processing',
-                                              'bg-green-100 text-green-800': order.status === 'completed',
-                                              'bg-red-100 text-red-800': order.status === 'cancelled'
+                                              'bg-yellow-100 text-yellow-800': effectiveStatus(order) === 'pending',
+                                              'bg-blue-100 text-blue-800': effectiveStatus(order) === 'processing',
+                                              'bg-green-100 text-green-800': effectiveStatus(order) === 'completed',
+                                              'bg-red-100 text-red-800': effectiveStatus(order) === 'cancelled'
                                           }">
-                                        {{ order.status.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}
+                                        {{ effectiveStatus(order).replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}
                                     </span>
                                     <p class="mt-1 text-lg font-bold text-gray-900">M{{ parseFloat(order.total || 0).toFixed(2) }}</p>
                                 </div>
@@ -68,8 +89,8 @@ defineProps({
                         <!-- Order Footer -->
                         <div class="bg-gray-50 px-6 py-3 border-t border-gray-200">
                             <div class="flex items-center justify-between text-sm text-gray-600">
-                                <span>Payment Method: {{ order.payment_method }}</span>
-                                <span>Payment Status: {{ order.payment_status }}</span>
+                                <span>Delivery: {{ order.delivery_method ? order.delivery_method.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '—' }}</span>
+                                <span>Status: {{ effectiveStatus(order).replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) }}</span>
                             </div>
                         </div>
                     </div>

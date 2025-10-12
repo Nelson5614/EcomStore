@@ -15,6 +15,15 @@ class Order extends Model
         'user_address_id',
         'created_by',
         'updated_by',
+        'delivery_method',
+        'delivery_charge',
+    ];
+
+    protected $casts = [
+        'total' => 'decimal:2',
+        'delivery_charge' => 'decimal:2',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function user()

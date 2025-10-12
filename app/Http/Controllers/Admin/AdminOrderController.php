@@ -52,6 +52,7 @@ class AdminOrderController extends Controller
             'total' => 'required|numeric|min:0',
             'status' => 'required|string|in:pending,processing,completed,cancelled',
             'session_id' => 'required|string',
+            'delivery_method' => 'required|string|in:in_store_pickup,own_uber,local_delivery',
         ]);
 
         $order = Order::create([
@@ -59,6 +60,7 @@ class AdminOrderController extends Controller
             'total' => $request->total,
             'status' => $request->status,
             'session_id' => $request->session_id,
+            'delivery_method' => $request->delivery_method,
             'created_by' => auth()->id(),
             'updated_by' => auth()->id(),
         ]);
@@ -72,7 +74,7 @@ class AdminOrderController extends Controller
      */
     public function show(Order $order)
     {
-        $order->load(['createdBy', 'userAddress.user', 'items.product']);
+        $order->load(['user', 'createdBy', 'userAddress.user', 'items.product']);
         
         return Inertia::render('Admin/Orders/Show', [
             'order' => $order
@@ -84,7 +86,7 @@ class AdminOrderController extends Controller
      */
     public function edit(Order $order)
     {
-        $order->load(['createdBy', 'userAddress.user', 'items.product']);
+        $order->load(['user', 'createdBy', 'userAddress.user', 'items.product']);
         
         return Inertia::render('Admin/Orders/Edit', [
             'order' => $order
@@ -101,6 +103,7 @@ class AdminOrderController extends Controller
             'total' => 'required|numeric|min:0',
             'status' => 'required|string|in:pending,processing,completed,cancelled',
             'session_id' => 'required|string',
+            'delivery_method' => 'required|string|in:in_store_pickup,own_uber,local_delivery',
         ]);
 
         $order->update([
@@ -108,6 +111,7 @@ class AdminOrderController extends Controller
             'total' => $request->total,
             'status' => $request->status,
             'session_id' => $request->session_id,
+            'delivery_method' => $request->delivery_method,
             'updated_by' => auth()->id(),
         ]);
 

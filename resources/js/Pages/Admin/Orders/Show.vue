@@ -50,6 +50,10 @@
                       <dd class="text-sm text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(order.total)) }}</dd>
                     </div>
                     <div>
+                      <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Delivery Method</dt>
+                      <dd class="text-sm text-gray-900 dark:text-white">{{ (order.delivery_method || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || '—' }}</dd>
+                    </div>
+                    <div>
                       <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Session ID</dt>
                       <dd class="text-sm text-gray-900 dark:text-white">{{ order.session_id }}</dd>
                     </div>
@@ -65,15 +69,15 @@
                   <dl class="space-y-2">
                     <div>
                       <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Customer Name</dt>
-                      <dd class="text-sm text-gray-900 dark:text-white">{{ order.createdBy?.name || 'Unknown' }}</dd>
+                      <dd class="text-sm text-gray-900 dark:text-white">{{ (order.user?.name || order.createdBy?.name || order.created_by?.name || order.user_address?.user?.name || order.userAddress?.user?.name) || 'Unknown' }}</dd>
                     </div>
                     <div>
                       <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Email</dt>
-                      <dd class="text-sm text-gray-900 dark:text-white">{{ order.createdBy?.email || '' }}</dd>
+                      <dd class="text-sm text-gray-900 dark:text-white">{{ (order.user?.email || order.createdBy?.email || order.created_by?.email || order.user_address?.user?.email || order.userAddress?.user?.email) || '' }}</dd>
                     </div>
                     <div>
                       <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Customer ID</dt>
-                      <dd class="text-sm text-gray-900 dark:text-white">{{ order.createdBy?.id || 'N/A' }}</dd>
+                      <dd class="text-sm text-gray-900 dark:text-white">{{ (order.user?.id || order.createdBy?.id || order.created_by?.id) || 'N/A' }}</dd>
                     </div>
                   </dl>
                 </div>
@@ -83,10 +87,10 @@
               <div class="mt-6">
                 <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Shipping Address</h3>
                 <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-                  <div v-if="order.userAddress" class="text-sm text-gray-900 dark:text-white">
-                    <p>{{ order.userAddress.address }}</p>
-                    <p>{{ order.userAddress.city }}, {{ order.userAddress.state }} {{ order.userAddress.zip }}</p>
-                    <p>{{ order.userAddress.country }}</p>
+                  <div v-if="(order.user_address || order.userAddress)" class="text-sm text-gray-900 dark:text-white">
+                    <p>{{ (order.user_address || order.userAddress).address }}</p>
+                    <p>{{ (order.user_address || order.userAddress).city }}, {{ (order.user_address || order.userAddress).state }} {{ (order.user_address || order.userAddress).zip }}</p>
+                    <p>{{ (order.user_address || order.userAddress).country }}</p>
                   </div>
                   <p v-else class="text-sm text-gray-500 dark:text-gray-400">No shipping address available</p>
                 </div>
@@ -153,17 +157,17 @@
                   <tbody class="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                     <tr v-for="item in order.items" :key="item.id" class="hover:bg-gray-50 dark:hover:bg-gray-700">
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.product?.name || 'Unknown Product' }}</div>
-                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ item.product?.sku || '' }}</div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.product?.title || 'Unknown Product' }}</div>
+                        <div class="text-sm text-gray-500 dark:text-gray-400">{{ item.product?.slug || '' }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900 dark:text-white">{{ item.quantity }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.price)) }}</div>
+                        <div class="text-sm text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.unit_price)) }}</div>
                       </td>
                       <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.price) * item.quantity) }}</div>
+                        <div class="text-sm font-medium text-gray-900 dark:text-white">{{ formatCurrency(parseFloat(item.unit_price) * item.quantity) }}</div>
                       </td>
                     </tr>
                   </tbody>

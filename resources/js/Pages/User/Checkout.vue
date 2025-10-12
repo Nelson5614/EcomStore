@@ -1,5 +1,5 @@
 <script setup>
-import { Link, useForm, usePage } from '@inertiajs/vue3';
+import { Link, useForm, usePage, router } from '@inertiajs/vue3';
 import { computed, ref, reactive } from 'vue';
 
 const props = defineProps({
@@ -9,11 +9,13 @@ const props = defineProps({
 
 const page = usePage();
 const user = computed(() => page.props.auth.user);
+const localDeliveryCharge = computed(() => page.props.localDeliveryCharge || 0);
 
 const form = useForm({
     user_address_id: '',
     payment_method: 'mpesa',
     phone_number: '',
+    delivery_method: 'in_store_pickup',
 });
 
 const selectedAddress = ref(null);
@@ -26,14 +28,23 @@ const formatPrice = (price) => {
     }).format(price);
 };
 
+// VAT 15% (Lesotho)
+const VAT_RATE = 0.15;
+
 const calculateSubtotal = () => {
     return props.cartItems.reduce((total, item) => {
         return total + (item.product.price * item.quantity);
     }, 0);
 };
 
+const deliveryCharge = computed(() => form.delivery_method === 'local_delivery' ? Number(localDeliveryCharge.value) : 0);
+
+const calculateVat = () => {
+    return calculateSubtotal() * VAT_RATE;
+};
+
 const calculateTotal = () => {
-    return calculateSubtotal(); // Add shipping/tax if needed
+    return calculateSubtotal() + calculateVat() + deliveryCharge.value;
 };
 
 
@@ -159,10 +170,11 @@ const confirmMpesaInModal = async () => {
 
         // Auto-close on INS-0 (success)
         if (modal.code === 'INS-0') {
-            // Briefly show success then close
+            // Briefly show success then redirect to Orders page
             setTimeout(() => {
-                closePaymentModal();
-            }, 1500);
+                showPaymentModal.value = false;
+                router.get(route('orders.index'));
+            }, 1200);
         }
     } catch (e) {
         modal.loading = false;
@@ -244,6 +256,56 @@ const confirmMpesaInModal = async () => {
                                         <button @click="handleAddAddress" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700">
                                             Add Address
                                         </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Delivery Method -->
+                        <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                            <div class="px-6 py-4 border-b border-gray-200">
+                                <h2 class="text-lg font-semibold text-gray-900">Delivery Method</h2>
+                            </div>
+                            <div class="p-6 space-y-4">
+                                <!-- In-store Pickup -->
+                                <div class="border rounded-lg p-4 cursor-pointer"
+                                     :class="{ 'border-amber-500 bg-amber-50': form.delivery_method === 'in_store_pickup', 'border-gray-200': form.delivery_method !== 'in_store_pickup' }"
+                                     @click="form.delivery_method = 'in_store_pickup'">
+                                    <div class="flex items-center">
+                                        <input type="radio" value="in_store_pickup" v-model="form.delivery_method"
+                                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
+                                        <div class="ml-3">
+                                            <p class="text-sm font-medium text-gray-900">In-store Pickup</p>
+                                            <p class="text-sm text-gray-600">Pick up your order from our store at your convenience.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Organize Your Own Uber -->
+                                <div class="border rounded-lg p-4 cursor-pointer"
+                                     :class="{ 'border-amber-500 bg-amber-50': form.delivery_method === 'own_uber', 'border-gray-200': form.delivery_method !== 'own_uber' }"
+                                     @click="form.delivery_method = 'own_uber'">
+                                    <div class="flex items-center">
+                                        <input type="radio" value="own_uber" v-model="form.delivery_method"
+                                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
+                                        <div class="ml-3">
+                                            <p class="text-sm font-medium text-gray-900">Organize Your Own Uber</p>
+                                            <p class="text-sm text-gray-600">Arrange your own courier/ride to pick up the order from our store.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Local Delivery -->
+                                <div class="border rounded-lg p-4 cursor-pointer"
+                                     :class="{ 'border-amber-500 bg-amber-50': form.delivery_method === 'local_delivery', 'border-gray-200': form.delivery_method !== 'local_delivery' }"
+                                     @click="form.delivery_method = 'local_delivery'">
+                                    <div class="flex items-center">
+                                        <input type="radio" value="local_delivery" v-model="form.delivery_method"
+                                               class="h-4 w-4 text-amber-600 focus:ring-amber-500 border-gray-300">
+                                        <div class="ml-3">
+                                            <p class="text-sm font-medium text-gray-900">Local Delivery</p>
+                                            <p class="text-sm text-gray-600">We deliver to your local address. We’ll contact you to arrange a drop-off time.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -334,16 +396,23 @@ const confirmMpesaInModal = async () => {
                                         <span>{{ formatPrice(calculateSubtotal()) }}</span>
                                     </div>
 
-                                    <!-- Shipping -->
+                                    <!-- Delivery -->
                                     <div class="flex justify-between text-gray-600">
-                                        <span>Shipping</span>
-                                        <span class="text-green-600">Free</span>
+                                        <span>Delivery</span>
+                                        <span>
+                                            <template v-if="form.delivery_method === 'local_delivery'">
+                                                {{ formatPrice(deliveryCharge) }}
+                                            </template>
+                                            <template v-else>
+                                                <span class="text-green-600">Free</span>
+                                            </template>
+                                        </span>
                                     </div>
 
-                                    <!-- Tax -->
+                                    <!-- VAT (15%) -->
                                     <div class="flex justify-between text-gray-600">
-                                        <span>Tax</span>
-                                        <span>{{ formatPrice(0) }}</span>
+                                        <span>VAT (15%)</span>
+                                        <span>{{ formatPrice(calculateVat()) }}</span>
                                     </div>
 
                                     <!-- Total -->

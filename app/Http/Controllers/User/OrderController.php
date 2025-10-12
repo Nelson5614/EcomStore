@@ -15,7 +15,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Order::where('created_by', Auth::id())
-            ->with(['orderItems.product'])
+            ->with(['orderItems.product.product_images', 'items.product.product_images', 'payment'])
             ->orderBy('created_at', 'desc')
             ->paginate(10);
 
@@ -30,8 +30,12 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::where('created_by', Auth::id())
-            ->with(['orderItems.product', 'userAddress'])
+            ->with(['orderItems.product.product_images', 'items.product.product_images', 'userAddress', 'payment'])
             ->findOrFail($id);
+
+        // Ensure both relation keys exist for frontend compatibility
+        $order->setRelation('orderItems', $order->orderItems);
+        $order->setRelation('items', $order->items);
 
         return inertia('User/Orders/Show', [
             'order' => $order

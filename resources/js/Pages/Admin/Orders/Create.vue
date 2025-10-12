@@ -81,6 +81,24 @@
               </select>
               <p v-if="errors.status" class="mt-1 text-sm text-red-600">{{ errors.status }}</p>
             </div>
+
+            <!-- Delivery Method -->
+            <div>
+              <label for="delivery_method" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Delivery Method *
+              </label>
+              <select
+                id="delivery_method"
+                v-model="form.delivery_method"
+                class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:bg-gray-700 dark:text-white"
+                :class="{ 'border-red-500': errors.delivery_method }"
+              >
+                <option value="in_store_pickup">In-store Pickup</option>
+                <option value="own_uber">Organize Your Own Uber</option>
+                <option value="local_delivery">Local Delivery</option>
+              </select>
+              <p v-if="errors.delivery_method" class="mt-1 text-sm text-red-600">{{ errors.delivery_method }}</p>
+            </div>
           </div>
 
           <!-- Session ID -->
@@ -149,7 +167,8 @@ const form = useForm({
   user_address_id: '',
   total: '',
   status: '',
-  session_id: ''
+  session_id: '',
+  delivery_method: 'in_store_pickup'
 });
 
 const submit = () => {

@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\AdminOrderController;
 use App\Http\Controllers\Admin\AdminBestSellerController;
 use App\Http\Controllers\Admin\AdminCollectionController;
+use App\Http\Controllers\Admin\AdminSettingsController;
 use App\Http\Controllers\PaymentController;
 
 //user routes
@@ -79,6 +80,8 @@ Route::prefix('payments')->controller(PaymentController::class)->group(function 
     Route::get('methods', 'getPaymentMethods')->name('payments.methods');
     Route::get('status/{transactionId}', 'checkPaymentStatus')->name('payments.status');
     Route::post('mpesa/initiate', 'initiateMpesaPayment')->name('payments.mpesa.initiate')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']);
+    // M-Pesa callback (no auth)
+    Route::post('mpesa/callback', 'handleMpesaCallback')->name('payments.mpesa.callback');
     Route::post('initiate', 'initiatePayment')->name('payments.initiate')->middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']);
 });
 
@@ -108,4 +111,7 @@ Route::prefix('admin')->middleware(['auth','admin'])->group(function () {
     Route::patch('/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])->name('admin.orders.status.update');
     Route::resource('bestsellers', AdminBestSellerController::class)->names('admin.bestsellers');
     Route::resource('collections', AdminCollectionController::class)->names('admin.collections');
+    // Settings
+    Route::get('/settings', [AdminSettingsController::class, 'index'])->name('admin.settings.index');
+    Route::post('/settings', [AdminSettingsController::class, 'update'])->name('admin.settings.update');
 });

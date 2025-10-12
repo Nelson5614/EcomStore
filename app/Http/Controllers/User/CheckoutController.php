@@ -50,7 +50,8 @@ class CheckoutController extends Controller
 
         return Inertia::render('User/Checkout', [
             'cartItems' => $cartItems,
-            'userAddresses' => $userAddresses
+            'userAddresses' => $userAddresses,
+            'localDeliveryCharge' => (float) \App\Models\Setting::get('local_delivery_charge', 0),
         ]);
     }
 
@@ -77,6 +78,7 @@ class CheckoutController extends Controller
             $validated = $request->validate([
                 'user_address_id' => 'required|exists:user_addresses,id',
                 'payment_method' => 'required|string|in:mpesa',
+                'delivery_method' => 'required|string|in:in_store_pickup,own_uber,local_delivery',
                 'phone_number' => 'required|string',
             ]);
             
@@ -116,14 +118,22 @@ class CheckoutController extends Controller
             
             \Log::info('Total amount calculated', ['total_amount' => $totalAmount]);
 
+            // Determine delivery charge (admin-configured) if local delivery
+            $deliveryCharge = 0;
+            if ($validated['delivery_method'] === 'local_delivery') {
+                $deliveryCharge = (float) \App\Models\Setting::get('local_delivery_charge', 0);
+            }
+
             // Create order
             $order = Order::create([
                 'total' => $totalAmount,
-                'status' => 'pending_payment',
+                'status' => 'pending',
                 'session_id' => session()->getId(),
                 'user_address_id' => $validated['user_address_id'],
                 'created_by' => $user ? $user->id : null,
                 'updated_by' => $user ? $user->id : null,
+                'delivery_method' => $validated['delivery_method'],
+                'delivery_charge' => $deliveryCharge,
             ]);
             
             \Log::info('Order created', ['order_id' => $order->id, 'order_data' => $order->toArray()]);
@@ -154,11 +164,13 @@ class CheckoutController extends Controller
             }
 
             // Create payment record for M-Pesa
+            $vat = $totalAmount * 0.15; // 15% VAT on subtotal
             $payment = Payment::create([
                 'order_id' => $order->id,
                 'transaction_id' => 'MPESA_' . time() . '_' . $order->id,
                 'payment_method' => 'mpesa',
-                'amount' => $totalAmount,
+                // Include VAT and delivery charge in payable amount
+                'amount' => $totalAmount + $vat + $deliveryCharge,
                 'currency' => config('mpesa.currency', 'LSL'),
                 'phone_number' => $validated['phone_number'],
                 'status' => 'pending',
@@ -197,13 +209,9 @@ class CheckoutController extends Controller
 
     public function success(Request $request)
     {
-        $orderId = $request->query('order');
-        $order = Order::with(['orderItems.product', 'userAddress'])
-            ->findOrFail($orderId);
-
-        return Inertia::render('User/CheckoutSuccess', [
-            'order' => $order
-        ]);
+        // After successful processing/payment, redirect to the user's Orders page
+        return redirect()->route('orders.index')
+            ->with('success', 'Order processed successfully. You can track it in your Orders.');
     }
 
     public function cancel()
@@ -218,8 +226,8 @@ class CheckoutController extends Controller
             ->where('created_by', $user->id)
             ->findOrFail($orderId);
 
-        // Check if order is pending payment
-        if ($order->status !== 'pending_payment') {
+        // Check if order is still pending payment
+        if ($order->status !== 'pending') {
             return redirect()->route('checkout.success', ['order' => $order->id]);
         }
 

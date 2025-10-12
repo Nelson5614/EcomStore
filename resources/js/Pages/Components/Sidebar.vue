@@ -167,6 +167,23 @@
               <span class="ml-3">Best Sellers</span>
             </Link>
           </li>
+          <li>
+            <Link
+              :href="route('admin.settings.index')"
+              class="flex items-center p-2 text-base font-medium text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
+            >
+              <svg
+                aria-hidden="true"
+                class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.14-2-.1-1.62 1.03l.29.88a6.97 6.97 0 00-2.61 1.52l-.86-.5c-1.06-.62-2.09.93-1.03 1.55l.78.45c-.06.32-.09.65-.09.98 0 .33.03.66.09.98l-.78.45c-1.06.62-.03 2.17 1.03 1.55l.86-.5a6.97 6.97 0 002.61 1.52l-.29.88c-.38 1.13 1.24 2.17 1.62 1.03l.29-.88c.65.08 1.31.08 1.96 0l.29.88c.38 1.14 2 .1 1.62-1.03l-.29-.88a6.97 6.97 0 002.61-1.52l.86.5c1.06.62 2.09-.93 1.03-1.55l-.78-.45c.06-.32.09-.65.09-.98 0-.33-.03-.66-.09-.98l.78-.45c1.06-.62.03-2.17-1.03-1.55l-.86.5a6.97 6.97 0 00-2.61-1.52l.29-.88c.38-1.13-1.24-2.17-1.62-1.03l-.29.88a6.98 6.98 0 00-1.96 0l-.29-.88zM10 13a3 3 0 110-6 3 3 0 010 6z" clip-rule="evenodd" />
+              </svg>
+              <span class="ml-3">Settings</span>
+            </Link>
+          </li>
 
         </ul>
 
